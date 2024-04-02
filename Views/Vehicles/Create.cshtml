@@ -1,0 +1,76 @@
+﻿@model ExpressVoitures.Data.Vehicle
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Vehicle</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CodeVIN" class="control-label"></label>
+                <input asp-for="CodeVIN" class="form-control" />
+                <span asp-validation-for="CodeVIN" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Annee" class="control-label"></label>
+                <input asp-for="Annee" class="form-control" type="number" min="1900" max="9999" />
+                <span asp-validation-for="Annee" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateAchat" class="control-label"></label>
+                <input asp-for="DateAchat" class="form-control" type="date" />
+                <span asp-validation-for="DateAchat" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrixAchat" class="control-label"></label>
+                <input asp-for="PrixAchat" class="form-control" />
+                <span asp-validation-for="PrixAchat" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateDisponibiliteVente" class="control-label"></label>
+                <input asp-for="DateDisponibiliteVente" class="form-control" type="date" />
+                <span asp-validation-for="DateDisponibiliteVente" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrixVente" class="control-label"></label>
+                <input asp-for="PrixVente" class="form-control" />
+                <span asp-validation-for="PrixVente" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateVente" class="control-label"></label>
+                <input asp-for="DateVente" class="form-control" />
+                <span asp-validation-for="DateVente" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MarqueId" class="control-label"></label>
+                <select asp-for="MarqueId" class ="form-control" asp-items="ViewBag.MarqueId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="ModeleId" class="control-label"></label>
+                <select asp-for="ModeleId" class="form-control" asp-items="ViewBag.ModeleId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
