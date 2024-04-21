@@ -6,7 +6,7 @@ namespace ExpressVoitures.Data
     {
         [Key]
         public int Id { get; set; }
-        public string CodeVIN { get; set; }
+        public string? CodeVIN { get; set; }
         public DateTime Annee { get; set; }
         public DateTime DateAchat { get; set; }
         public decimal PrixAchat { get; set; }
@@ -17,8 +17,10 @@ namespace ExpressVoitures.Data
         public virtual ICollection<CarImage> Images { get; set; } = new HashSet<CarImage>();
         public int MarqueId { get; set; }
         public int ModeleId { get; set; }
+        public int FinitionId { get; set; }
         public virtual CarBrand Marque { get; set; }
         public virtual CarModel Modele { get; set; }
+        public virtual CarFinish Finition { get; set; }
         public string Description { get; set; }
     }
 }

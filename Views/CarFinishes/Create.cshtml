@@ -1,0 +1,71 @@
+﻿@model ExpressVoitures.Data.CarFinish
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>CarFinish</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Marque</label>
+                <select id="marqueSelect" class="form-control" onchange="updateModeleSelect()">
+                    <option value="">Sélectionner une marque</option>
+                    @foreach (var marque in ViewBag.Marques)
+                    {
+                        <option value="@marque.Id">@marque.Nom</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="ModeleId" class="control-label"></label>
+                <select id="modeleSelect" asp-for="ModeleId" class="form-control" disabled></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nom" class="control-label"></label>
+                <input asp-for="Nom" class="form-control" />
+                <span asp-validation-for="Nom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+        function updateModeleSelect() {
+            var marqueId = document.getElementById("marqueSelect").value;
+            var modeleSelect = document.getElementById("modeleSelect");
+            modeleSelect.innerHTML = ""; // Clear existing options
+            if (marqueId !== "") {
+                var modeles = @Html.Raw(Json.Serialize(ViewBag.Modeles));
+                var filteredModeles = modeles.filter(function (modele) {
+                    return modele.marqueId == marqueId;
+                });
+                filteredModeles.forEach(function (modele) {
+                    var option = document.createElement("option");
+                    option.text = modele.nom;
+                    option.value = modele.id;
+                    modeleSelect.appendChild(option);
+                });
+                modeleSelect.disabled = false;
+            } else {
+                modeleSelect.disabled = true;
+            }
+        }
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
