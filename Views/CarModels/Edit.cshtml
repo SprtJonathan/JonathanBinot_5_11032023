@@ -1,12 +1,12 @@
 ﻿@model ExpressVoitures.Data.CarModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Modification | Modèle";
 }
 
-<h1>Edit</h1>
+<h1>Modifier un modèle</h1>
 
-<h4>CarModel</h4>
+<h4>Modèle</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,7 +14,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="MarqueId" class="control-label"></label>
+                <label asp-for="Marque" class="control-label"></label>
                 <select asp-for="MarqueId" class="form-control" asp-items="ViewBag.MarqueId"></select>
                 <span asp-validation-for="MarqueId" class="text-danger"></span>
             </div>

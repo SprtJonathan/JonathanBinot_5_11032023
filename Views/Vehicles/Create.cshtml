@@ -1,12 +1,12 @@
 ﻿@model ExpressVoitures.Data.Vehicle
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Ajout | Véhicules";
 }
 
-<h1>Create</h1>
+<h1>Ajouter un véhicule</h1>
 
-<h4>Vehicle</h4>
+<h4>Véhicule</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -19,12 +19,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="Annee" class="control-label"></label>
-                <input asp-for="Annee" class="form-control" type="number" />
+                <input asp-for="Annee" type="number" class="form-control" />
                 <span asp-validation-for="Annee" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DateAchat" class="control-label"></label>
-                <input asp-for="DateAchat" class="form-control" type="date" />
+                <input asp-for="DateAchat" type="date" class="form-control" />
                 <span asp-validation-for="DateAchat" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -34,7 +34,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="DateDisponibiliteVente" class="control-label"></label>
-                <input asp-for="DateDisponibiliteVente" class="form-control" type="date" />
+                <input asp-for="DateDisponibiliteVente" class="form-control" />
                 <span asp-validation-for="DateDisponibiliteVente" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -53,7 +53,15 @@
             </div>
             <div class="form-group">
                 <label asp-for="ModeleId" class="control-label"></label>
-                <select asp-for="ModeleId" class="form-control" asp-items="ViewBag.ModeleId"></select>
+                <select asp-for="ModeleId" class ="form-control" asp-items="ViewBag.ModeleId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="FinitionId" class="control-label"></label>
+                <select asp-for="FinitionId" class ="form-control" asp-items="ViewBag.FinitionId"></select>
+            </div>
+            <div class="form-group">
+                <label for="images" class="control-label">Images:</label>
+                <input type="file" id="images" name="images" class="form-control" multiple />
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>

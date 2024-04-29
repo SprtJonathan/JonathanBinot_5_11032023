@@ -25,6 +25,7 @@ namespace ExpressVoitures.Data
             modelBuilder.Entity<CarRepair>().Property(r => r.CoutsReparation).HasColumnType("decimal(8, 2)");
             modelBuilder.Entity<Vehicle>().Property(v => v.PrixAchat).HasColumnType("decimal(8, 2)");
             modelBuilder.Entity<Vehicle>().Property(v => v.PrixVente).HasColumnType("decimal(8, 2)");
+            modelBuilder.Entity<Vehicle>().Property(v => v.Annee).HasColumnType("char(4)").IsRequired();
 
             modelBuilder.Entity<CarModel>()
                 .HasOne(m => m.Marque)
@@ -48,6 +49,12 @@ namespace ExpressVoitures.Data
                 .HasOne(v => v.Modele)
                 .WithMany()
                 .HasForeignKey(v => v.ModeleId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Vehicle>()
+                .HasOne(v => v.Finition)
+                .WithMany()
+                .HasForeignKey(v => v.FinitionId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

@@ -57,6 +57,13 @@ namespace ExpressVoitures.Controllers
         {
             if (ModelState.IsValid)
             {
+                var existingBrand = await _context.Marques.FirstOrDefaultAsync(m => m.Nom == carBrand.Nom);
+
+                if(existingBrand != null)
+                {
+                    ModelState.AddModelError("Nom", "Une marque avec ce nom existe déjà.");
+                    return View(carBrand);
+                }
                 _context.Add(carBrand);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

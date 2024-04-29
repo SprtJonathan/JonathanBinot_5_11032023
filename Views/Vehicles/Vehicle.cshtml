@@ -1,7 +1,7 @@
 ﻿@model ExpressVoitures.Data.Vehicle
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Annee + " " + Model.Marque + " " + Model.Modele;
 }
 
 <h1>Details</h1>
@@ -17,6 +17,12 @@
         </div>
     </div>
     <hr />
+    <div>
+        @foreach(var image in Model.Images)
+        {
+            <img src="@image.ImageLink"/>
+        }
+    </div>
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CodeVIN)

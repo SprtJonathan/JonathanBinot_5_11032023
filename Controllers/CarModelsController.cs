@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExpressVoitures.Data;
+using Microsoft.CodeAnalysis.Differencing;
 
 namespace ExpressVoitures.Controllers
 {
@@ -44,6 +45,53 @@ namespace ExpressVoitures.Controllers
             return View(carModel);
         }
 
+        /// <summary>
+        /// Méthode permettant de vérifier si le nom du modèle est déjà présent en base de données
+        /// </summary>
+        /// <param name="carModel"></param>
+        /// <param name="editing"></param>
+        /// <returns></returns>
+        private async Task<IActionResult> CheckExistingModel(CarModel carModel, bool editing = false)
+        {
+            var existingModel = await _context.Modeles
+                    .FirstOrDefaultAsync(m => m.MarqueId == carModel.MarqueId && m.Nom == carModel.Nom);
+
+            if (existingModel != null)
+            {
+                ModelState.AddModelError("Nom", "Un modèle avec ce nom existe déjà pour cette marque.");
+                if (editing)
+                    ViewData["MarqueId"] = new SelectList(_context.Marques, "Id", "Nom", carModel.MarqueId);
+                else
+                    ViewBag.Marque = new SelectList(_context.Marques, "Id", "Nom");
+                return View(carModel);
+            }
+            if (editing)
+            {
+                try
+                {
+                    _context.Update(carModel);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CarModelExists(carModel.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+            else
+            {
+                _context.Add(carModel);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
         // GET: CarModels/Create
         public IActionResult Create()
         {
@@ -61,9 +109,7 @@ namespace ExpressVoitures.Controllers
             ModelState.Remove("Marque");
             if (ModelState.IsValid)
             {
-                _context.Add(carModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return await CheckExistingModel(carModel, false);
             }
             ViewBag.Marque = new SelectList(_context.Marques, "Id", "Nom");
             return View(carModel);
@@ -82,7 +128,7 @@ namespace ExpressVoitures.Controllers
             {
                 return NotFound();
             }
-            ViewData["MarqueId"] = new SelectList(_context.Marques, "Id", "Id", carModel.MarqueId);
+            ViewData["MarqueId"] = new SelectList(_context.Marques, "Id", "Nom", carModel.MarqueId);
             return View(carModel);
         }
 
@@ -93,6 +139,7 @@ namespace ExpressVoitures.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,MarqueId,Nom")] CarModel carModel)
         {
+            ModelState.Remove("Marque");
             if (id != carModel.Id)
             {
                 return NotFound();
@@ -100,25 +147,9 @@ namespace ExpressVoitures.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(carModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CarModelExists(carModel.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return await CheckExistingModel(carModel, true);
             }
-            ViewData["MarqueId"] = new SelectList(_context.Marques, "Id", "Id", carModel.MarqueId);
+            ViewData["MarqueId"] = new SelectList(_context.Marques, "Id", "Nom", carModel.MarqueId);
             return View(carModel);
         }
 

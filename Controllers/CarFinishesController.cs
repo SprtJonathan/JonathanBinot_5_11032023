@@ -48,6 +48,57 @@ namespace ExpressVoitures.Controllers
             return View(carFinish);
         }
 
+        /// <summary>
+        /// Méthode permettant de vérifier si le nom de la finition est déjà présent en base de données
+        /// </summary>
+        /// <param name="carModel"></param>
+        /// <param name="editing"></param>
+        /// <returns></returns>
+        private async Task<IActionResult> CheckExistingFinish(CarFinish carFinish, bool editing = false)
+        {
+            var existingFinish = await _context.Finitions
+                    .FirstOrDefaultAsync(m => m.ModeleId == carFinish.ModeleId && m.Nom == carFinish.Nom);
+
+            if (existingFinish != null)
+            {
+                ModelState.AddModelError("Nom", "Une finition avec ce nom existe déjà pour ce modèle.");
+                if (editing)
+                    ViewData["ModeleId"] = new SelectList(_context.Modeles, "Id", "Nom", carFinish.ModeleId);
+                else
+                {
+                    var marques = _context.Marques.ToList();
+                    ViewBag.Marques = marques.Select(m => new { Id = m.Id, Nom = m.Nom }).ToList();
+                    ViewBag.Modeles = _context.Modeles.Select(model => new { Id = model.Id, Nom = model.Nom, MarqueId = model.MarqueId }).ToList();
+                }
+                return View(carFinish);
+            }
+            if (editing)
+            {
+                try
+                {
+                    _context.Update(carFinish);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CarFinishExists(carFinish.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+            else
+            {
+                _context.Add(carFinish);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
         // GET: CarFinishes/Create
         public IActionResult Create()
         {
@@ -67,9 +118,7 @@ namespace ExpressVoitures.Controllers
             ModelState.Remove("Modele");
             if (ModelState.IsValid)
             {
-                _context.Add(carFinish);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return await CheckExistingFinish(carFinish);
             }
             var marques = _context.Marques.ToList();
             ViewBag.Marques = marques.Select(m => new { Id = m.Id, Nom = m.Nom }).ToList();
@@ -126,7 +175,7 @@ namespace ExpressVoitures.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ModeleId"] = new SelectList(_context.Modeles, "Id", "Id", carFinish.ModeleId);
+            ViewData["ModeleId"] = new SelectList(_context.Modeles, "Id", "Nom", carFinish.ModeleId);
             return View(carFinish);
         }
 
