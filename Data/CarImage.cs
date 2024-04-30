@@ -7,6 +7,7 @@ namespace ExpressVoitures.Data
     {
         [Key]
         public int Id { get; set; }
+
         [ForeignKey("Vehicle")]
         public int VehicleId { get; set; }
         public string ImageLink { get; set; }
