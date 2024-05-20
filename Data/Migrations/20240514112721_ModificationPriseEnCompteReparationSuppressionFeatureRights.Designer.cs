@@ -4,6 +4,7 @@ using ExpressVoitures.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExpressVoitures.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240514112721_ModificationPriseEnCompteReparationSuppressionFeatureRights")]
+    partial class ModificationPriseEnCompteReparationSuppressionFeatureRights
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,6 +111,29 @@ namespace ExpressVoitures.Data.Migrations
                     b.ToTable("Modeles");
                 });
 
+            modelBuilder.Entity("ExpressVoitures.Data.CarRepair", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("CoutsReparation")
+                        .HasColumnType("decimal(8, 2)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VehicleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reparations");
+                });
+
             modelBuilder.Entity("ExpressVoitures.Data.Vehicle", b =>
                 {
                     b.Property<int>("Id")
@@ -124,7 +150,7 @@ namespace ExpressVoitures.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("CoutsReparation")
-                        .HasColumnType("decimal(8, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("DateAchat")
                         .HasColumnType("datetime2");

@@ -16,20 +16,18 @@ namespace ExpressVoitures.Data
 
         [Required(ErrorMessage = "La date d'achat est requise.")]
         [Display(Name = "Date d'achat")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateOnly DateAchat { get; set; }
+        public DateTime DateAchat { get; set; }
 
         [Required(ErrorMessage = "Le prix d'achat est requis.")]
         [RegularExpression(@"^\d+(\.\d{1,2})?$", ErrorMessage = "Le prix d'achat doit être au format numérique avec au maximum 2 chiffres après la virgule.")]
         public decimal PrixAchat { get; set; }
 
-        public virtual ICollection<CarRepair> Reparations { get; set; } = new HashSet<CarRepair>();
+        public string? Reparations { get; set; }
+        public decimal? CoutsReparation { get; set; }
 
         [Required(ErrorMessage = "La date de disponibilité de vente est requise.")]
         [Display(Name = "Date de disponibilité de vente")]
-        [DataType(DataType.Date)]
-        [DateRange(1990, ErrorMessage = "L'année doit être comprise entre 1990 et l'année en cours.")]
-        public DateOnly DateDisponibiliteVente { get; set; }
+        public DateTime DateDisponibiliteVente { get; set; }
 
         [Required(ErrorMessage = "Le prix de vente est requis.")]
         [RegularExpression(@"^\d+(\.\d{1,2})?$", ErrorMessage = "Le prix de vente doit être au format numérique avec au maximum 2 chiffres après la virgule.")]
@@ -37,8 +35,7 @@ namespace ExpressVoitures.Data
 
         [Display(Name = "Date de vente")]
         [DataType(DataType.Date)]
-        [DateRange(1990, ErrorMessage = "L'année doit être comprise entre 1990 et l'année en cours.")]
-        public DateOnly? DateVente { get; set; }
+        public DateTime? DateVente { get; set; }
 
         public virtual ICollection<CarImage> Images { get; set; } = new HashSet<CarImage>();
 

@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExpressVoitures.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ExpressVoitures.Controllers
 {
+    [Authorize]
     public class CarFinishesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -22,8 +24,8 @@ namespace ExpressVoitures.Controllers
         public async Task<IActionResult> Index()
         {
             var marques = _context.Marques.ToList();
-            ViewBag.Marques = marques.Select(m => new { Id = m.Id, Nom = m.Nom }).ToList();
-            ViewBag.Modeles = _context.Modeles.Select(model => new { Id = model.Id, Nom = model.Nom, MarqueId = model.MarqueId }).ToList();
+            ViewBag.Marques = marques.Select(m => new { m.Id, m.Nom }).ToList();
+            ViewBag.Modeles = _context.Modeles.Select(model => new { model.Id, model.Nom, model.MarqueId }).ToList();
 
             var applicationDbContext = _context.Finitions.Include(c => c.Modele);
             return View(await applicationDbContext.ToListAsync());
@@ -63,12 +65,15 @@ namespace ExpressVoitures.Controllers
             {
                 ModelState.AddModelError("Nom", "Une finition avec ce nom existe déjà pour ce modèle.");
                 if (editing)
-                    ViewData["ModeleId"] = new SelectList(_context.Modeles, "Id", "Nom", carFinish.ModeleId);
+                {
+                    ViewData["MarqueNom"] = carFinish.Modele.Marque.Nom;
+                    ViewData["ModeleNom"] = carFinish.Modele.Nom;
+                }
                 else
                 {
                     var marques = _context.Marques.ToList();
-                    ViewBag.Marques = marques.Select(m => new { Id = m.Id, Nom = m.Nom }).ToList();
-                    ViewBag.Modeles = _context.Modeles.Select(model => new { Id = model.Id, Nom = model.Nom, MarqueId = model.MarqueId }).ToList();
+                    ViewBag.Marques = marques.Select(m => new { m.Id, m.Nom }).ToList();
+                    ViewBag.Modeles = _context.Modeles.Select(model => new { model.Id, model.Nom, model.MarqueId }).ToList();
                 }
                 return View(carFinish);
             }
@@ -103,8 +108,8 @@ namespace ExpressVoitures.Controllers
         public IActionResult Create()
         {
             var marques = _context.Marques.ToList();
-            ViewBag.Marques = marques.Select(m => new { Id = m.Id, Nom = m.Nom }).ToList();
-            ViewBag.Modeles = _context.Modeles.Select(model => new { Id = model.Id, Nom = model.Nom, MarqueId = model.MarqueId }).ToList();
+            ViewBag.Marques = marques.Select(m => new { m.Id, m.Nom }).ToList();
+            ViewBag.Modeles = _context.Modeles.Select(model => new { model.Id, model.Nom, model.MarqueId }).ToList();
             return View();
         }
 
@@ -121,8 +126,8 @@ namespace ExpressVoitures.Controllers
                 return await CheckExistingFinish(carFinish);
             }
             var marques = _context.Marques.ToList();
-            ViewBag.Marques = marques.Select(m => new { Id = m.Id, Nom = m.Nom }).ToList();
-            ViewBag.Modeles = _context.Modeles.Select(model => new { Id = model.Id, Nom = model.Nom, MarqueId = model.MarqueId }).ToList();
+            ViewBag.Marques = marques.Select(m => new { m.Id, m.Nom }).ToList();
+            ViewBag.Modeles = _context.Modeles.Select(model => new { model.Id, model.Nom, model.MarqueId }).ToList();
             return View(carFinish);
         }
 
@@ -134,14 +139,22 @@ namespace ExpressVoitures.Controllers
                 return NotFound();
             }
 
-            var carFinish = await _context.Finitions.FindAsync(id);
+            var carFinish = await _context.Finitions
+                .Include(c => c.Modele)
+                    .ThenInclude(m => m.Marque)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
             if (carFinish == null)
             {
                 return NotFound();
             }
-            ViewData["ModeleId"] = new SelectList(_context.Modeles, "Id", "Id", carFinish.ModeleId);
+
+            ViewData["MarqueNom"] = carFinish.Modele.Marque.Nom;
+            ViewData["ModeleNom"] = carFinish.Modele.Nom;
+
             return View(carFinish);
         }
+
 
         // POST: CarFinishes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -150,34 +163,37 @@ namespace ExpressVoitures.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,ModeleId,Nom")] CarFinish carFinish)
         {
+            ModelState.Remove("Modele");
+
             if (id != carFinish.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var existingCarFinish = await _context.Finitions
+                .Include(c => c.Modele)
+                    .ThenInclude(m => m.Marque)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (existingCarFinish != null)
             {
-                try
+                _context.Entry(existingCarFinish).State = EntityState.Detached;
+                carFinish.Modele = existingCarFinish.Modele;
+
+                if (ModelState.IsValid)
                 {
-                    _context.Update(carFinish);
-                    await _context.SaveChangesAsync();
+                    return await CheckExistingFinish(carFinish, true);
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CarFinishExists(carFinish.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["ModeleId"] = new SelectList(_context.Modeles, "Id", "Nom", carFinish.ModeleId);
+
+            ModelState.AddModelError("Nom", "Une erreur est survenue.");
+
+            ViewData["MarqueNom"] = carFinish.Modele.Marque.Nom;
+            ViewData["ModeleNom"] = carFinish.Modele.Nom;
+
             return View(carFinish);
         }
+
 
         // GET: CarFinishes/Delete/5
         public async Task<IActionResult> Delete(int? id)

@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="CodeVIN" class="control-label"></label>
@@ -34,8 +34,16 @@
             </div>
             <div class="form-group">
                 <label asp-for="DateDisponibiliteVente" class="control-label"></label>
-                <input asp-for="DateDisponibiliteVente" class="form-control" />
+                <input asp-for="DateDisponibiliteVente" type="date" class="form-control" />
                 <span asp-validation-for="DateDisponibiliteVente" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Reparations" class="control-label">Liste des réparations</label>
+                <input asp-for="Reparations" class="form-control" type="textarea" />
+            </div>
+            <div class="form-group">
+                <label asp-for="CoutsReparation" class="control-label">Coût des réparations</label>
+                <input asp-for="CoutsReparation" type="number" class="form-control" />
             </div>
             <div class="form-group">
                 <label asp-for="PrixVente" class="control-label"></label>
@@ -44,20 +52,29 @@
             </div>
             <div class="form-group">
                 <label asp-for="DateVente" class="control-label"></label>
-                <input asp-for="DateVente" class="form-control" />
+                <input asp-for="DateVente" type="date" class="form-control" />
                 <span asp-validation-for="DateVente" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MarqueId" class="control-label"></label>
-                <select asp-for="MarqueId" class ="form-control" asp-items="ViewBag.MarqueId"></select>
+                <label class="control-label">Marque</label>
+                <select id="marqueSelect" asp-for="MarqueId" class="form-control" onchange="updateModeleSelect()">
+                    <option value="">Sélectionner une marque</option>
+                    @foreach (var marque in ViewBag.Marques)
+                    {
+                        <option value="@marque.Id">@marque.Nom</option>
+                    }
+                </select>
+                <span asp-validation-for="MarqueId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ModeleId" class="control-label"></label>
-                <select asp-for="ModeleId" class ="form-control" asp-items="ViewBag.ModeleId"></select>
+                <label asp-for="Modele" class="control-label"></label>
+                <select id="modeleSelect" asp-for="ModeleId" class="form-control" onchange="updateFinitionSelect()" disabled></select>
+                <span asp-validation-for="ModeleId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FinitionId" class="control-label"></label>
-                <select asp-for="FinitionId" class ="form-control" asp-items="ViewBag.FinitionId"></select>
+                <label asp-for="Finition" class="control-label"></label>
+                <select id="finitionSelect" asp-for="FinitionId" class="form-control" disabled></select>
+                <span asp-validation-for="FinitionId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label for="images" class="control-label">Images:</label>
@@ -67,6 +84,10 @@
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IsPublished" class="control-label">Publier l'annonce</label>
+                <input asp-for="IsPublished" class="form-check-input" type="checkbox" id="IsPublished" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -80,5 +101,54 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function updateModeleSelect() {
+            var marqueId = document.getElementById("marqueSelect").value;
+            var modeleSelect = document.getElementById("modeleSelect");
+            modeleSelect.innerHTML = "";
+            if (marqueId !== "") {
+                var modeles = @Html.Raw(Json.Serialize(ViewBag.Modeles));
+                var filteredModeles = modeles.filter(function (modele) {
+                    return modele.marqueId == marqueId;
+                });
+                filteredModeles.forEach(function (modele) {
+                    var option = document.createElement("option");
+                    option.text = modele.nom;
+                    option.value = modele.id;
+                    modeleSelect.appendChild(option);
+                });
+                modeleSelect.disabled = false;
+            } else {
+                modeleSelect.disabled = true;
+            }
+            updateFinitionSelect();
+        }
+
+        function updateFinitionSelect() {
+            var modeleId = document.getElementById("modeleSelect").value;
+            var finitionSelect = document.getElementById("finitionSelect");
+            finitionSelect.innerHTML = "";
+
+            if (modeleId !== "") {
+                var finitions = @Html.Raw(Json.Serialize(ViewBag.Finitions));
+                var filteredFinitions = finitions.filter(function (finition) {
+                    return finition.modeleId == modeleId;
+                });
+
+                filteredFinitions.forEach(function (finition) {
+                    var option = document.createElement("option");
+                    option.text = finition.nom;
+                    option.value = finition.id;
+                    finitionSelect.appendChild(option);
+                });
+
+                finitionSelect.disabled = false;
+            } else {
+                finitionSelect.disabled = true;
+            }
+        }
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

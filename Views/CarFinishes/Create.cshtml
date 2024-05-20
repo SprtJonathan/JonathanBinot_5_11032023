@@ -47,7 +47,7 @@
         function updateModeleSelect() {
             var marqueId = document.getElementById("marqueSelect").value;
             var modeleSelect = document.getElementById("modeleSelect");
-            modeleSelect.innerHTML = ""; // Clear existing options
+            modeleSelect.innerHTML = "";
             if (marqueId !== "") {
                 var modeles = @Html.Raw(Json.Serialize(ViewBag.Modeles));
                 var filteredModeles = modeles.filter(function (modele) {

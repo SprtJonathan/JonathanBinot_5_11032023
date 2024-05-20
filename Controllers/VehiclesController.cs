@@ -6,22 +6,31 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExpressVoitures.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Hosting;
 
 namespace ExpressVoitures.Controllers
 {
     public class VehiclesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public VehiclesController(ApplicationDbContext context)
+        public VehiclesController(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         // GET: Vehicles
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Vehicles.Include(v => v.Finition).Include(v => v.Marque).Include(v => v.Modele);
+            var applicationDbContext = _context.Vehicles
+                .Include(v => v.Finition)
+                .Include(v => v.Marque)
+                .Include(v => v.Modele)
+                .Include(v => v.Images)
+                .Where(v => v.IsPublished == true);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -37,6 +46,7 @@ namespace ExpressVoitures.Controllers
                 .Include(v => v.Finition)
                 .Include(v => v.Marque)
                 .Include(v => v.Modele)
+                .Include(v => v.Images)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (vehicle == null)
             {
@@ -47,11 +57,14 @@ namespace ExpressVoitures.Controllers
         }
 
         // GET: Vehicles/Create
+        [Authorize]
         public IActionResult Create()
         {
-            ViewData["FinitionId"] = new SelectList(_context.Finitions, "Id", "Nom");
-            ViewData["MarqueId"] = new SelectList(_context.Marques, "Id", "Nom");
-            ViewData["ModeleId"] = new SelectList(_context.Modeles, "Id", "Nom");
+            var marques = _context.Marques.ToList();
+            ViewBag.Marques = marques.Select(m => new { Id = m.Id, Nom = m.Nom }).ToList();
+            ViewBag.Modeles = _context.Modeles.Select(model => new { Id = model.Id, Nom = model.Nom, MarqueId = model.MarqueId }).ToList();
+            ViewBag.Finitions = _context.Finitions.Select(f => new { Id = f.Id, Nom = f.Nom, ModeleId = f.ModeleId }).ToList();
+
             return View();
         }
 
@@ -60,32 +73,40 @@ namespace ExpressVoitures.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create(Vehicle vehicle, List<IFormFile> images)
         {
+            ModelState.Remove("Marque");
+            ModelState.Remove("Modele");
+            ModelState.Remove("Finition");
             if (ModelState.IsValid)
             {
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
 
-                foreach (var imageFile in images)
+                // Créer le dossier pour stocker les images
+                var uploadDir = Path.Combine(_hostEnvironment.WebRootPath, "img/annonces", vehicle.Id.ToString());
+                if (!Directory.Exists(uploadDir))
                 {
-                    if (imageFile != null && imageFile.Length > 0)
-                    {
-                        // Enregistrer le fichier sur le serveur
-                        var filePath = "chemin/vers/le/dossier/ou/enregistrer/le/fichier"; // Spécifiez le chemin d'accès approprié
-                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-                        var fullPath = Path.Combine(filePath, fileName);
+                    Directory.CreateDirectory(uploadDir);
+                }
 
-                        using (var stream = new FileStream(fullPath, FileMode.Create))
+                // Sauvegarder les images
+                foreach (var image in images)
+                {
+                    if (image != null && image.Length > 0)
+                    {
+                        var filePath = Path.Combine(uploadDir, image.FileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
                         {
-                            await imageFile.CopyToAsync(stream);
+                            await image.CopyToAsync(stream);
                         }
 
-                        // Enregistrer le chemin d'accès à l'image dans la base de données
+                        // Ajouter l'image à la base de données
                         var carImage = new CarImage
                         {
                             VehicleId = vehicle.Id,
-                            ImageLink = fullPath // Enregistrez le chemin d'accès complet
+                            ImageLink = $"/img/annonces/{vehicle.Id}/{image.FileName}"
                         };
                         _context.VehicleImages.Add(carImage);
                     }
@@ -97,14 +118,16 @@ namespace ExpressVoitures.Controllers
             }
 
             // Si la validation échoue, rechargez les listes déroulantes et affichez à nouveau le formulaire avec les erreurs de validation
-            ViewData["FinitionId"] = new SelectList(_context.Finitions, "Id", "Nom", vehicle.FinitionId);
-            ViewData["MarqueId"] = new SelectList(_context.Marques, "Id", "Nom", vehicle.MarqueId);
-            ViewData["ModeleId"] = new SelectList(_context.Modeles, "Id", "Nom", vehicle.ModeleId);
+            var marques = _context.Marques.ToList();
+            ViewBag.Marques = marques.Select(m => new { Id = m.Id, Nom = m.Nom }).ToList();
+            ViewBag.Modeles = _context.Modeles.Select(model => new { Id = model.Id, Nom = model.Nom, MarqueId = model.MarqueId }).ToList();
+            ViewBag.Finitions = _context.Finitions.Select(f => new { Id = f.Id, Nom = f.Nom, ModeleId = f.ModeleId }).ToList();
             return View(vehicle);
         }
 
 
         // GET: Vehicles/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -128,6 +151,7 @@ namespace ExpressVoitures.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("Id,CodeVIN,Annee,DateAchat,PrixAchat,DateDisponibiliteVente,PrixVente,DateVente,MarqueId,ModeleId,FinitionId,Description")] Vehicle vehicle)
         {
             if (id != vehicle.Id)
@@ -162,6 +186,7 @@ namespace ExpressVoitures.Controllers
         }
 
         // GET: Vehicles/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -185,6 +210,7 @@ namespace ExpressVoitures.Controllers
         // POST: Vehicles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var vehicle = await _context.Vehicles.FindAsync(id);

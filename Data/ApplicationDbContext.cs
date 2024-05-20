@@ -11,18 +11,16 @@ namespace ExpressVoitures.Data
             : base(options)
         {
         }
-        public DbSet<AccountRight> AccountRights { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<CarBrand> Marques { get; set; }
         public DbSet<CarModel> Modeles { get; set; }
         public DbSet<CarFinish> Finitions { get; set; }
-        public DbSet<CarRepair> Reparations { get; set; }
         public DbSet<CarImage> VehicleImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<CarRepair>().Property(r => r.CoutsReparation).HasColumnType("decimal(8, 2)");
+            modelBuilder.Entity<Vehicle>().Property(v => v.CoutsReparation).HasColumnType("decimal(8, 2)");
             modelBuilder.Entity<Vehicle>().Property(v => v.PrixAchat).HasColumnType("decimal(8, 2)");
             modelBuilder.Entity<Vehicle>().Property(v => v.PrixVente).HasColumnType("decimal(8, 2)");
             modelBuilder.Entity<Vehicle>().Property(v => v.Annee).HasColumnType("char(4)").IsRequired();
