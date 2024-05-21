@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -20,12 +20,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="Annee" class="control-label"></label>
-                <input asp-for="Annee" class="form-control" />
+                <input asp-for="Annee" type="number" class="form-control" />
                 <span asp-validation-for="Annee" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DateAchat" class="control-label"></label>
-                <input asp-for="DateAchat" class="form-control" />
+                <input asp-for="DateAchat" type="date" class="form-control" />
                 <span asp-validation-for="DateAchat" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -35,8 +35,16 @@
             </div>
             <div class="form-group">
                 <label asp-for="DateDisponibiliteVente" class="control-label"></label>
-                <input asp-for="DateDisponibiliteVente" class="form-control" />
+                <input asp-for="DateDisponibiliteVente" type="date" class="form-control" />
                 <span asp-validation-for="DateDisponibiliteVente" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Reparations" class="control-label">Liste des réparations</label>
+                <input asp-for="Reparations" class="form-control" type="textarea" />
+            </div>
+            <div class="form-group">
+                <label asp-for="CoutsReparation" class="control-label">Coût des réparations</label>
+                <input asp-for="CoutsReparation" type="number" class="form-control" />
             </div>
             <div class="form-group">
                 <label asp-for="PrixVente" class="control-label"></label>
@@ -45,23 +53,37 @@
             </div>
             <div class="form-group">
                 <label asp-for="DateVente" class="control-label"></label>
-                <input asp-for="DateVente" class="form-control" />
+                <input asp-for="DateVente" type="date" class="form-control" />
                 <span asp-validation-for="DateVente" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MarqueId" class="control-label"></label>
-                <select asp-for="MarqueId" class="form-control" asp-items="ViewBag.MarqueId"></select>
+                <label class="control-label">Marque</label>
+                <select id="marqueSelect" asp-for="MarqueId" class="form-control" onchange="updateModeleSelect()">
+                    <option value="">Sélectionner une marque</option>
+                    @foreach (var marque in ViewBag.Marques)
+                    {
+                        <option value="@marque.Id">@marque.Nom</option>
+                    }
+                </select>
                 <span asp-validation-for="MarqueId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ModeleId" class="control-label"></label>
-                <select asp-for="ModeleId" class="form-control" asp-items="ViewBag.ModeleId"></select>
+                <label asp-for="Modele" class="control-label"></label>
+                <select id="modeleSelect" asp-for="ModeleId" class="form-control" onchange="updateFinitionSelect()" disabled>
+                    <option value="">Sélectionner un modèle</option>
+                </select>
                 <span asp-validation-for="ModeleId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FinitionId" class="control-label"></label>
-                <select asp-for="FinitionId" class="form-control" asp-items="ViewBag.FinitionId"></select>
+                <label asp-for="Finition" class="control-label"></label>
+                <select id="finitionSelect" asp-for="FinitionId" class="form-control" disabled>
+                    <option value="">Sélectionner une finition</option>
+                </select>
                 <span asp-validation-for="FinitionId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="images" class="control-label">Images:</label>
+                <input type="file" id="images" name="images" class="form-control" multiple />
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
@@ -69,9 +91,26 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="IsPublished" class="control-label">Publier l'annonce</label>
+                <input asp-for="IsPublished" class="form-check-input" type="checkbox" id="IsPublished" />
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
+        <h4>Images existantes</h4>
+        <div>
+            @foreach (var image in Model.Images)
+            {
+                <div class="image-container position-relative mb-3">
+                    <img src="@image.ImageLink" alt="Image du véhicule" class="img-fluid" />
+                    <form asp-action="DeleteImage" method="post" class="position-absolute top-0 end-0">
+                        <input type="hidden" name="imageId" value="@image.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">×</button>
+                    </form>
+                </div>
+            }
+        </div>
     </div>
 </div>
 
@@ -80,5 +119,85 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function updateModeleSelect() {
+            var marqueId = document.getElementById("marqueSelect").value;
+            var modeleSelect = document.getElementById("modeleSelect");
+            modeleSelect.innerHTML = "";
+            if (marqueId !== "") {
+                var modeles = @Html.Raw(Json.Serialize(ViewBag.Modeles));
+                var filteredModeles = modeles.filter(function (modele) {
+                    return modele.marqueId == marqueId;
+                });
+                filteredModeles.forEach(function (modele) {
+                    var option = document.createElement("option");
+                    option.text = modele.nom;
+                    option.value = modele.id;
+                    modeleSelect.appendChild(option);
+                });
+                modeleSelect.disabled = false;
+            } else {
+                modeleSelect.disabled = true;
+            }
+            updateFinitionSelect();
+        }
+
+        function updateFinitionSelect() {
+            var modeleId = document.getElementById("modeleSelect").value;
+            var finitionSelect = document.getElementById("finitionSelect");
+            finitionSelect.innerHTML = "";
+
+            if (modeleId !== "") {
+                var finitions = @Html.Raw(Json.Serialize(ViewBag.Finitions));
+                var filteredFinitions = finitions.filter(function (finition) {
+                    return finition.modeleId == modeleId;
+                });
+
+                filteredFinitions.forEach(function (finition) {
+                    var option = document.createElement("option");
+                    option.text = finition.nom;
+                    option.value = finition.id;
+                    finitionSelect.appendChild(option);
+                });
+
+                finitionSelect.disabled = false;
+            } else {
+                finitionSelect.disabled = true;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            updateModeleSelect();
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+<style>
+    .image-container {
+        position: relative;
+        width: 100%;
+        padding-bottom: 56.25%; /* 16:9 ratio */
+        overflow: hidden;
+        background-color: #f0f0f0; /* Optional: background color */
+        margin-bottom: 10px;
+    }
+
+        .image-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .image-container .btn-danger {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+</style>

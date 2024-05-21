@@ -14,25 +14,30 @@
         <a asp-action="Create">Ajouter une annonce</a>
     </p>
 }
-<section id="offer-section" class="flex-row align-items-center justify-content-start">
+<section id="offer-section" class="d-flex flex-lg-wrap align-items-center justify-content-start">
     @foreach (var item in Model)
     {
-        <div id="vehicle-@item.Id-block" class="card w-25">
+        <div id="vehicle-@item.Id-block" class="card m-2 annonce" style="width:400px">
             <a asp-action="Details" asp-route-id="@item?.Id" class="text-black text-decoration-none">
-                <figure class="card-header">
-                    <div class="image-container">
+                <figure class="card-header d-flex align-items-center justify-content-between">
+                    <div class="image-container" style="width:170px">
                         <img class="card-img" src="@(item.Images != null && item.Images.Any() ? item.Images.FirstOrDefault().ImageLink : "/img/general/media-unavailable.png")" />
                     </div>
-                    <figcaption class="card-body flex-column">
-                        <div class="d-flex justify-content-between card-text">
-                            <span>@Html.DisplayFor(modelItem => item.Marque.Nom) @Html.DisplayFor(modelItem => item.Modele.Nom) @Html.DisplayFor(modelItem => item.Finition.Nom)</span>
+                    <figcaption class="d-flex flex-column card-body flex-column" style="width:170px">
+                        <div class="d-flex flex-column">
+                            <span>@Html.DisplayFor(modelItem => item.Marque.Nom) @Html.DisplayFor(modelItem => item.Modele.Nom)</span>
+                            <span>@Html.DisplayFor(modelItem => item.Finition.Nom)</span>
                             <span>@Html.DisplayFor(modelItem => item.Annee)</span>
                         </div>
-                        <div class="d-flex justify-content-between card-text">
+                        <div class="d-flex flex-column card-text">
                             @Html.DisplayFor(modelItem => item.PrixVente, new { @class = "fw-bold" })€
                             @if (SignInManager.IsSignedIn(User))
                             {
-                                <a asp-action="Edit" asp-route-id="@item?.Id">Edit</a>
+                                <div>
+                                    <a asp-action="Edit" asp-route-id="@item?.Id">Edit</a>
+                                    <span>|</span>
+                                    <a asp-action="Delete" asp-route-id="@item?.Id">Delete</a>
+                                </div>
                             }
                         </div>
                     </figcaption>
@@ -41,3 +46,8 @@
         </div>
     }
 </section>
+<style>
+    .annonce {
+        width: 300px;
+    }
+</style>

@@ -19,7 +19,7 @@ namespace ExpressVoitures.Data
         public DateTime DateAchat { get; set; }
 
         [Required(ErrorMessage = "Le prix d'achat est requis.")]
-        [RegularExpression(@"^\d+(\.\d{1,2})?$", ErrorMessage = "Le prix d'achat doit être au format numérique avec au maximum 2 chiffres après la virgule.")]
+        [RegularExpression(@"^\d+([.,]\d{1,2})?$", ErrorMessage = "Le prix d'achat doit être au format numérique avec au maximum 2 chiffres après la virgule.")]
         public decimal PrixAchat { get; set; }
 
         public string? Reparations { get; set; }
@@ -30,7 +30,7 @@ namespace ExpressVoitures.Data
         public DateTime DateDisponibiliteVente { get; set; }
 
         [Required(ErrorMessage = "Le prix de vente est requis.")]
-        [RegularExpression(@"^\d+(\.\d{1,2})?$", ErrorMessage = "Le prix de vente doit être au format numérique avec au maximum 2 chiffres après la virgule.")]
+        [RegularExpression(@"^\d+([.,]\d{1,2})?$", ErrorMessage = "Le prix de vente doit être au format numérique avec au maximum 2 chiffres après la virgule.")]
         public decimal PrixVente { get; set; }
 
         [Display(Name = "Date de vente")]
