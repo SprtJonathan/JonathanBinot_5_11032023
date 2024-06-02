@@ -14,31 +14,37 @@
         <a asp-action="Create">Ajouter une annonce</a>
     </p>
 }
-<section id="offer-section" class="d-flex flex-lg-wrap align-items-center justify-content-start">
+<section id="offer-section" class="d-flex flex-lg-wrap align-items-center justify-content-start annonce-container">
     @foreach (var item in Model)
     {
-        <div id="vehicle-@item.Id-block" class="card m-2 annonce" style="width:400px">
-            <a asp-action="Details" asp-route-id="@item?.Id" class="text-black text-decoration-none">
-                <figure class="card-header d-flex align-items-center justify-content-between">
-                    <div class="image-container" style="width:170px">
-                        <img class="card-img" src="@(item.Images != null && item.Images.Any() ? item.Images.FirstOrDefault().ImageLink : "/img/general/media-unavailable.png")" />
+        <div id="vehicle-@item.Id-block" class="annonce">
+            <a asp-action="Listing" asp-route-id="@item?.Id" class="text-black text-decoration-none">
+                <figure class="card-header d-flex align-items-center justify-content-between annonce-block">
+                    <div class="annonce-image-container annonce-image">
+                        <img src="@(item.Images != null && item.Images.Any() ? item.Images.FirstOrDefault().ImageLink : "/img/general/media-unavailable.png")" />
                     </div>
-                    <figcaption class="d-flex flex-column card-body flex-column" style="width:170px">
+                    <figcaption class="annonce-text-block">
                         <div class="d-flex flex-column">
-                            <span>@Html.DisplayFor(modelItem => item.Marque.Nom) @Html.DisplayFor(modelItem => item.Modele.Nom)</span>
-                            <span>@Html.DisplayFor(modelItem => item.Finition.Nom)</span>
-                            <span>@Html.DisplayFor(modelItem => item.Annee)</span>
+                            <span class="annonce-titre">
+                                @Html.DisplayFor(modelItem => item.Marque.Nom) @Html.DisplayFor(modelItem => item.Modele.Nom)
+                            </span>
+                            <span class="annonce-texte">@Html.DisplayFor(modelItem => item.Finition.Nom)</span>
+                            <span class="annonce-texte">@Html.DisplayFor(modelItem => item.Annee)</span>
                         </div>
-                        <div class="d-flex flex-column card-text">
-                            @Html.DisplayFor(modelItem => item.PrixVente, new { @class = "fw-bold" })€
-                            @if (SignInManager.IsSignedIn(User))
-                            {
-                                <div>
-                                    <a asp-action="Edit" asp-route-id="@item?.Id">Edit</a>
-                                    <span>|</span>
-                                    <a asp-action="Delete" asp-route-id="@item?.Id">Delete</a>
-                                </div>
-                            }
+                        <div class="annonce-prix-edit">
+                            <div class="annonce-edit-block">
+                                @if (SignInManager.IsSignedIn(User))
+                                {
+
+                                    <a class="icon-link" asp-action="Edit" asp-route-id="@item?.Id">🖋️</a>
+                                    <a class="icon-link" asp-action="Delete" asp-route-id="@item?.Id">❌</a>
+
+                                }
+                            </div>
+                            <span class="annonce-prix">
+                                @Html.DisplayFor(modelItem => item.PrixVente) €
+                            </span>
+
                         </div>
                     </figcaption>
                 </figure>
@@ -46,8 +52,3 @@
         </div>
     }
 </section>
-<style>
-    .annonce {
-        width: 300px;
-    }
-</style>

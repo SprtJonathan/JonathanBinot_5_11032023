@@ -34,7 +34,43 @@ namespace ExpressVoitures.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        // GET: Vehicles/AdminIndex
+        [Authorize]
+        public async Task<IActionResult> AdminIndex()
+        {
+            var applicationDbContext = _context.Vehicles
+                .Include(v => v.Finition)
+                .Include(v => v.Marque)
+                .Include(v => v.Modele)
+                .Include(v => v.Images)
+                .Where(v => v.IsPublished == true);
+            return View(await applicationDbContext.ToListAsync());
+        }
+
+        // GET: Vehicles/Listing/5
+        public async Task<IActionResult> Listing(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vehicle = await _context.Vehicles
+                .Include(v => v.Finition)
+                .Include(v => v.Marque)
+                .Include(v => v.Modele)
+                .Include(v => v.Images)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+
+            return View(vehicle);
+        }
+
         // GET: Vehicles/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

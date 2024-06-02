@@ -1,5 +1,43 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model IEnumerable<ExpressVoitures.Data.Vehicle>
+
+<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            <li data-target="#carouselExampleIndicators" data-slide-to="@i" class="@(i == 0 ? "active" : "")"></li>
+        }
+    </ol>
+    <div class="carousel-inner">
+        @{
+            bool firstSlide = true;
+            foreach (var vehicle in Model)
+            {
+                <div class="carousel-item @(firstSlide ? "active" : "")">
+                    <a asp-controller="Vehicles" asp-action="Listing" asp-route-id="@vehicle.Id">
+                        <img class="d-block w-100" src="@(vehicle.Images != null && vehicle.Images.Any() ? vehicle.Images.FirstOrDefault().ImageLink : "/img/general/media-unavailable.png")" alt="@vehicle.Annee @vehicle.Marque.Nom @vehicle.Modele.Nom @vehicle.Finition.Nom">
+                        <div class="carousel-caption controls-background d-flex flex-row justify-content-between row m-auto">
+                            <div class="w-25 mx-5">
+                                <h5 class="text-start">@vehicle.Marque.Nom @vehicle.Modele.Nom @vehicle.Finition.Nom</h5>
+                                <h6 class="text-start">@vehicle.Annee</h6>
+                            </div>
+                            <div class="w-25 mx-5">
+                                <h5 class="text-end">@vehicle.PrixVente €</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                firstSlide = false;
+            }
+        }
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <div class="carousel-controls">
+            <span class="carousel-control-prev-icon " aria-hidden="true"></span>
+        </div>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <div class="carousel-controls">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </div>
+    </a>
+</div>
