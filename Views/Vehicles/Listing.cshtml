@@ -9,7 +9,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div class="d-flex justify-content-between align-items-center">
-        <a asp-action="Index" class="btn btn-secondary">Retour</a>
+        <a asp-action="Index" class="btn back-button">🔙</a>
         <h1>@Model.Marque.Nom @Model.Modele.Nom</h1>
     </div>
     <div>
@@ -17,100 +17,152 @@
     </div>
 </div>
 <div>
-    <!-- Galerie d'images -->
-    <div class="gallery">
-        <div class="row">
-            <div class="col-12 mb-3">
-                <div class="ratio-16-9">
-                    <a href="@(images.FirstOrDefault()?.ImageLink ?? "/img/general/media-unavailable.png")" target="_blank">
-                        <img src="@(images.FirstOrDefault()?.ImageLink ?? "/img/general/media-unavailable.png")" class="img-fluid main-image" alt="Main Image">
-                    </a>
+    <div class="gallery-details row">
+        <section class="gallery-section col">
+            <div class="row">
+                <div class="@(images.Count > 1 ? "col-12 col-md-8": "")">
+                    <div class="gallery-image-container">
+                        <a href="#" data-toggle="modal" data-target="#imageModal" data-slide-to="0">
+                            <img src="@(images.FirstOrDefault()?.ImageLink ?? "/img/general/media-unavailable.png")" class="img-fluid gallery-main-image" alt="Main Image">
+                        </a>
+                    </div>
                 </div>
+                @if (images.Count > 1)
+                {
+                    <div class="col-12 col-md-4">
+
+                        @for (int i = 1; i < images.Count && i <= 2; i++)
+                        {
+                            <div class="gallery-image-container mb-3">
+                                @if (images.Count > 3 && i == 2)
+                                {
+                                    <a href="#" data-toggle="modal" data-target="#imageModal" data-slide-to="3">
+                                        <span class="gallery-plus-sign">+</span>
+                                        <img src="@images[3].ImageLink" class="img-fluid gallery-hidden-image" alt="Hidden Image">
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="#" data-toggle="modal" data-target="#imageModal" data-slide-to="@i">
+                                        <img src="@images[i].ImageLink" class="img-fluid gallery-thumbnail-image" alt="Image @i">
+                                    </a>
+                                }
+                            </div>
+                        }
+
+                    </div>
+                }
             </div>
-            @for (int i = 1; i < images.Count; i++)
+
+            @if (images.Count > 0)
             {
-                <div class="col-4 mb-3">
-                    <a href="@images[i].ImageLink" target="_blank">
-                        <img src="@images[i].ImageLink" class="img-fluid thumbnail-image" alt="Image @i">
-                    </a>
+                <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                        <div class="modal-content gallery-modal-content">
+                            <div id="imageCarousel" class="carousel slide" data-interval="false">
+                                <div class="carousel-inner">
+                                    @for (int i = 0; i < images.Count; i++)
+                                    {
+                                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                                            <img src="@images[i].ImageLink" class="d-block w-100" alt="Image @i">
+                                        </div>
+                                    }
+                                </div>
+                                @if (images.Count > 1)
+                                {
+                                    <a class="carousel-control-prev" href="#imageCarousel" role="button" data-slide="prev">
+                                        <div class="carousel-controls">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        </div>
+                                    </a>
+                                    <a class="carousel-control-next" href="#imageCarousel" role="button" data-slide="next">
+                                        <div class="carousel-controls">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        </div>
+                                    </a>
+                                }
+                            </div>
+                            <div class="gallery-thumbnails">
+                                @for (int i = 0; i < images.Count; i++)
+                                {
+                                    <div class="gallery-thumbnail @(i == 0 ? "active" : "")" data-slide-to="@i" onclick="changeImage(@i)">
+                                        <div class="gallery-thumbnail-container">
+                                            <img src="@images[i].ImageLink" class="img-fluid" alt="Thumbnail @i">
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
             }
+        </section>
+
+        <section class="listing-section listing-details">
+            <h3 class="listing-title">
+                Détails de l'annonce
+            </h3>
+            <hr />
+            <div class="detail">
+                <dt class="">
+                    @Html.DisplayNameFor(model => model.Finition)
+                </dt>
+                <dd class="">
+                    @Html.DisplayFor(model => model.Finition.Nom)
+                </dd>
+            </div>
+            <div class="detail">
+                <dt class="">
+                    @Html.DisplayNameFor(model => model.Annee)
+                </dt>
+                <dd class="">
+                    @Html.DisplayFor(model => model.Annee)
+                </dd>
+            </div>
+            <div class="detail">
+                <dt class="">
+                    @Html.DisplayNameFor(model => model.DateDisponibiliteVente)
+                </dt>
+                <dd class="">
+                    @Model.DateDisponibiliteVente.ToString("dd/MM/yyyy")
+                </dd>
+            </div>
+        </section>
+    </div>
+    <div class="gallery-details row">
+        <div class="listing-section description-reparation col">
+            <section class="row">
+                <h5 class="">
+                    @Html.DisplayNameFor(model => model.Description)
+                </h5>
+                <p>
+                    @Html.DisplayFor(model => model.Description)
+                </p>
+            </section>
+            <hr />
+            <section class="row">
+                <h5 class="">
+                    @Html.DisplayNameFor(model => model.Reparations)
+                </h5>
+                <p>
+                    @Html.DisplayFor(model => model.Reparations)
+                </p>
+            </section>
         </div>
     </div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CodeVIN)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CodeVIN)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Annee)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Annee)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DateAchat)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DateAchat)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.PrixAchat)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.PrixAchat)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DateDisponibiliteVente)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DateDisponibiliteVente)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.PrixVente)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.PrixVente)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DateVente)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DateVente)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Marque)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Marque.Nom)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Modele)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Modele.Nom)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Finition)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Finition.Nom)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-    </dl>
 </div>
-<div>    
+<div>
     @if (SignInManager.IsSignedIn(User))
     {
-        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> 
-        <a asp-action="AdminIndex">Retour liste admin</a>
+        <a asp-action="AdminIndex" title="Retour à la liste administrateur" class="icon-link">📋</a>
+        <a asp-action="Edit" asp-route-id="@Model?.Id" title="Modifier l'annonce" class="icon-link">🖋️</a>
+        <a asp-action="Delete" asp-route-id="@Model?.Id" title="Supprimer l'annonce" class="icon-link">❌</a>
     }
 </div>
+
+<script>
+    function changeImage(index) {
+        $('#imageCarousel').carousel(index);
+    }
+</script>

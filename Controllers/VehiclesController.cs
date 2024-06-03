@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ExpressVoitures.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Hosting;
+using ExpressVoitures.Models;
 
 namespace ExpressVoitures.Controllers
 {
@@ -23,16 +24,49 @@ namespace ExpressVoitures.Controllers
         }
 
         // GET: Vehicles
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(VehicleFilters filters)
         {
-            var applicationDbContext = _context.Vehicles
+            var query = _context.Vehicles
                 .Include(v => v.Finition)
                 .Include(v => v.Marque)
                 .Include(v => v.Modele)
                 .Include(v => v.Images)
-                .Where(v => v.IsPublished == true);
-            return View(await applicationDbContext.ToListAsync());
+                .Where(v => v.IsPublished == true)
+                .AsQueryable();
+
+            if (filters != null)
+            {
+                if (filters.MarqueId.HasValue)
+                {
+                    query = query.Where(v => v.MarqueId == filters.MarqueId.Value);
+                }
+
+                if (filters.ModeleId.HasValue)
+                {
+                    query = query.Where(v => v.ModeleId == filters.ModeleId.Value);
+                }
+
+                if (filters.FinitionId.HasValue)
+                {
+                    query = query.Where(v => v.FinitionId == filters.FinitionId.Value);
+                }
+
+                if (filters.Annee.HasValue)
+                {
+                    query = query.Where(v => v.Annee == filters.Annee.Value);
+                }
+                ViewBag.Filters = filters;
+            }
+
+            var marques = _context.Marques.ToList();
+            ViewBag.Marques = marques.Select(m => new { Id = m.Id, Nom = m.Nom }).ToList();
+            ViewBag.Modeles = _context.Modeles.Select(model => new { Id = model.Id, Nom = model.Nom, MarqueId = model.MarqueId }).ToList();
+            ViewBag.Finitions = _context.Finitions.Select(f => new { Id = f.Id, Nom = f.Nom, ModeleId = f.ModeleId }).ToList();
+
+            var vehicles = await query.ToListAsync();
+            return View(vehicles);
         }
+
 
         // GET: Vehicles/AdminIndex
         [Authorize]
@@ -42,8 +76,7 @@ namespace ExpressVoitures.Controllers
                 .Include(v => v.Finition)
                 .Include(v => v.Marque)
                 .Include(v => v.Modele)
-                .Include(v => v.Images)
-                .Where(v => v.IsPublished == true);
+                .Include(v => v.Images);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -181,9 +214,9 @@ namespace ExpressVoitures.Controllers
             }
 
             var marques = _context.Marques.ToList();
-            ViewBag.Marques = marques.Select(m => new { Id = m.Id, Nom = m.Nom }).ToList();
-            ViewBag.Modeles = _context.Modeles.Select(model => new { Id = model.Id, Nom = model.Nom, MarqueId = model.MarqueId }).ToList();
-            ViewBag.Finitions = _context.Finitions.Select(f => new { Id = f.Id, Nom = f.Nom, ModeleId = f.ModeleId }).ToList();
+            ViewBag.Marques = marques.Select(m => new { m.Id, m.Nom }).ToList();
+            ViewBag.Modeles = _context.Modeles.Select(model => new { model.Id, model.Nom,model.MarqueId }).ToList();
+            ViewBag.Finitions = _context.Finitions.Select(f => new { f.Id, f.Nom, f.ModeleId }).ToList();
             return View(vehicle);
         }
 
@@ -257,6 +290,11 @@ namespace ExpressVoitures.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            var marques = _context.Marques.ToList();
+            ViewBag.Marques = marques.Select(m => new { m.Id, m.Nom }).ToList();
+            ViewBag.Modeles = _context.Modeles.Select(model => new { model.Id, model.Nom, model.MarqueId }).ToList();
+            ViewBag.Finitions = _context.Finitions.Select(f => new { f.Id, f.Nom, f.ModeleId }).ToList();
 
             ViewData["FinitionId"] = new SelectList(_context.Finitions, "Id", "Nom", vehicle.FinitionId);
             ViewData["MarqueId"] = new SelectList(_context.Marques, "Id", "Nom", vehicle.MarqueId);

@@ -15,6 +15,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.IsPublished)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.CodeVIN)
             </th>
             <th>
@@ -27,13 +30,13 @@
                 @Html.DisplayNameFor(model => model.PrixAchat)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateDisponibiliteVente)
+                Date dispo. vente
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PrixVente)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateVente)
+                Date vente
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Marque)
@@ -55,6 +58,9 @@
         {
             <tr>
                 <td>
+                    @Html.DisplayFor(model => item.IsPublished)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.CodeVIN)
                 </td>
                 <td>
@@ -67,7 +73,7 @@
                     @Html.DisplayFor(modelItem => item.PrixAchat)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DateDisponibiliteVente)
+                    @item.DateDisponibiliteVente.ToString("dd/MM/yyyy")
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.PrixVente)

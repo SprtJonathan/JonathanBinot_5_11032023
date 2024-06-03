@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<ExpressVoitures.Data.Vehicle>
 
-<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+<div id="carouselHomepageIndicators" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">
         @for (int i = 0; i < Model.Count(); i++)
         {
-            <li data-target="#carouselExampleIndicators" data-slide-to="@i" class="@(i == 0 ? "active" : "")"></li>
+            <li data-target="#carouselHomepageIndicators" data-slide-to="@i" class="@(i == 0 ? "active" : "")"></li>
         }
     </ol>
     <div class="carousel-inner">
@@ -30,12 +30,12 @@
             }
         }
     </div>
-    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+    <a class="carousel-control-prev" href="#carouselHomepageIndicators" role="button" data-slide="prev">
         <div class="carousel-controls">
             <span class="carousel-control-prev-icon " aria-hidden="true"></span>
         </div>
     </a>
-    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+    <a class="carousel-control-next" href="#carouselHomepageIndicators" role="button" data-slide="next">
         <div class="carousel-controls">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
         </div>

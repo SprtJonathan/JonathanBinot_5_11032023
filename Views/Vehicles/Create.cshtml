@@ -29,7 +29,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="PrixAchat" class="control-label"></label>
-                <input asp-for="PrixAchat" class="form-control" />
+                <input asp-for="PrixAchat" type="number" class="form-control" />
                 <span asp-validation-for="PrixAchat" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -47,7 +47,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="PrixVente" class="control-label"></label>
-                <input asp-for="PrixVente" class="form-control" />
+                <input asp-for="PrixVente" type="number" class="form-control" />
                 <span asp-validation-for="PrixVente" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -103,49 +103,12 @@
 @section Scripts {
     <script>
         function updateModeleSelect() {
-            var marqueId = document.getElementById("marqueSelect").value;
-            var modeleSelect = document.getElementById("modeleSelect");
-            modeleSelect.innerHTML = "";
-            if (marqueId !== "") {
-                var modeles = @Html.Raw(Json.Serialize(ViewBag.Modeles));
-                var filteredModeles = modeles.filter(function (modele) {
-                    return modele.marqueId == marqueId;
-                });
-                filteredModeles.forEach(function (modele) {
-                    var option = document.createElement("option");
-                    option.text = modele.nom;
-                    option.value = modele.id;
-                    modeleSelect.appendChild(option);
-                });
-                modeleSelect.disabled = false;
-            } else {
-                modeleSelect.disabled = true;
-            }
+            updateSelect("marqueSelect", "modeleSelect", @Html.Raw(Json.Serialize(ViewBag.Modeles)), "id", "marqueId");
             updateFinitionSelect();
         }
 
         function updateFinitionSelect() {
-            var modeleId = document.getElementById("modeleSelect").value;
-            var finitionSelect = document.getElementById("finitionSelect");
-            finitionSelect.innerHTML = "";
-
-            if (modeleId !== "") {
-                var finitions = @Html.Raw(Json.Serialize(ViewBag.Finitions));
-                var filteredFinitions = finitions.filter(function (finition) {
-                    return finition.modeleId == modeleId;
-                });
-
-                filteredFinitions.forEach(function (finition) {
-                    var option = document.createElement("option");
-                    option.text = finition.nom;
-                    option.value = finition.id;
-                    finitionSelect.appendChild(option);
-                });
-
-                finitionSelect.disabled = false;
-            } else {
-                finitionSelect.disabled = true;
-            }
+            updateSelect("modeleSelect", "finitionSelect", @Html.Raw(Json.Serialize(ViewBag.Finitions)), "id", "modeleId");
         }
     </script>
     @{
