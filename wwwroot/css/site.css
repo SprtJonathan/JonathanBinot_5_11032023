@@ -1,4 +1,4 @@
-html {
+﻿html {
     font-size: 14px;
 }
 
@@ -173,3 +173,48 @@ body {
     font-size: 25px;
     margin-right: 10px;
 }
+
+.table-container {
+    background-color: #D9D9D9;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.table th {
+    padding: 10px;
+}
+
+.table tr {
+    border: 5px solid #D9D9D9;
+    border-radius: 10px;
+}
+
+.table td {
+    vertical-align: middle;
+    background-color: white;
+    padding: 5px;
+}
+
+
+
+.create-element {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    line-height: 30px;
+    font-size: 25px;
+    width: 100%;
+    height: fit-content;
+    background-color: #D9D9D9;
+    border-radius: 10px;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+}
+
+    .create-element::before {
+        content: "➕";
+        font-size: 30px;
+        margin-right: 10px;
+        text-align: center;
+    }

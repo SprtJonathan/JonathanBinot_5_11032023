@@ -1,4 +1,5 @@
 ﻿using ExpressVoitures.Models;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace ExpressVoitures.Data
@@ -8,9 +9,11 @@ namespace ExpressVoitures.Data
         [Key]
         public int Id { get; set; }
 
+        [Display(Name = "Code VIN")]
         public string? CodeVIN { get; set; }
 
         [Required(ErrorMessage = "L'année du véhicule est requise.")]
+        [Display(Name = "Année")]
         [YearRange(1990, ErrorMessage = "L'année doit être comprise entre 1990 et l'année en cours.")]
         public int Annee { get; set; }
 
@@ -18,11 +21,15 @@ namespace ExpressVoitures.Data
         [Display(Name = "Date d'achat")]
         public DateTime DateAchat { get; set; }
 
+        [Display(Name = "Prix d'achat")]
         [Required(ErrorMessage = "Le prix d'achat est requis.")]
         [RegularExpression(@"^\d+([.,]\d{1,2})?$", ErrorMessage = "Le prix d'achat doit être au format numérique avec au maximum 2 chiffres après la virgule.")]
         public decimal PrixAchat { get; set; }
 
+        [Display(Name = "Réparations")]
         public string? Reparations { get; set; }
+
+        [Display(Name = "Coût des réparations")]
         public decimal? CoutsReparation { get; set; }
 
         [Required(ErrorMessage = "La date de disponibilité de vente est requise.")]
@@ -30,6 +37,7 @@ namespace ExpressVoitures.Data
         public DateTime DateDisponibiliteVente { get; set; }
 
         [Required(ErrorMessage = "Le prix de vente est requis.")]
+        [Display(Name = "Prix de vente")]
         [RegularExpression(@"^\d+([.,]\d{1,2})?$", ErrorMessage = "Le prix de vente doit être au format numérique avec au maximum 2 chiffres après la virgule.")]
         public decimal PrixVente { get; set; }
 
@@ -54,6 +62,7 @@ namespace ExpressVoitures.Data
 
         public string? Description { get; set; }
 
+        [Display(Name = "Publiée?")]
         public bool IsPublished { get; set; } = false;
     }
 }

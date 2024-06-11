@@ -7,8 +7,9 @@
 <partial name="_AdminPagesTitle" title="Modèles" />
 
 <p>
-    <a asp-action="Create">Ajouter un modèle</a>
+    <a class="create-element" asp-action="Create">Ajouter un modèle</a>
 </p>
+<div class="table-container">
 <table class="table">
     <thead>
         <tr>
@@ -38,11 +39,12 @@
                     @Html.DisplayFor(modelItem => item.Marque.Nom)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Détails</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
+                    <a class="btn icon-link" asp-action="Details" asp-route-id="@item.Id" title="Retour à la liste administrateur">📋</a>
+                    <a class="btn icon-link" asp-action="Edit" asp-route-id="@item.Id" onclick="logIssue" title="Éditer">🖋️</a>
+                    <a class="btn icon-link" asp-action="Delete" asp-route-id="@item.Id" title="Supprimer">❌</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+</div>

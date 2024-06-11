@@ -3,103 +3,63 @@
 @model IEnumerable<ExpressVoitures.Data.Vehicle>
 
 @{
-    ViewData["Title"] = "Annonces";
+    ViewData["Title"] = "Véhicules";
 }
 
-<h1>Annonces</h1>
+<partial name="_AdminPagesTitle" title="Véhicules" />
 
 <p>
-    <a asp-action="Create">Ajouter une annonce</a>
+    <a class="create-element" asp-action="Create">Créer une nouvelle annonce</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.IsPublished)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CodeVIN)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Annee)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateAchat)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PrixAchat)
-            </th>
-            <th>
-                Date dispo. vente
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PrixVente)
-            </th>
-            <th>
-                Date vente
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Marque)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Modele)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Finition)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div class="table-container">
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(model => item.IsPublished)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CodeVIN)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Annee)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateAchat)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PrixAchat)
-                </td>
-                <td>
-                    @item.DateDisponibiliteVente.ToString("dd/MM/yyyy")
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PrixVente)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateVente)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Marque.Nom)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Modele.Nom)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Finition.Nom)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Détails</a> |
-                    <a asp-action="Listing" asp-route-id="@item.Id">Annonce</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsPublished)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Annee)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Marque)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Modele)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Finition)
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => item.IsPublished)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Annee)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Marque.Nom)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Modele.Nom)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Finition.Nom)
+                    </td>
+                    <td>
+                        <a asp-action="Listing" asp-route-id="@item.Id" title="Voir l'annonce">📰</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" title="Modifier l'annonce">🖋️</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" title="Détails de l'annonce">📋</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" title="Supprimer l'annonce'">❌</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

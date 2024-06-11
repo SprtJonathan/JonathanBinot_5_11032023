@@ -11,7 +11,7 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <p>
-        <a asp-action="Create">Ajouter une annonce</a>
+        <a class="create-element" asp-action="Create">Ajouter une annonce</a>
     </p>
 }
 <section class="annonce-filtre-container">
@@ -54,7 +54,7 @@
     @foreach (var item in Model)
     {
         <div id="vehicle-@item.Id-block" class="annonce">
-            <a asp-action="Listing" asp-route-id="@item?.Id" class="text-black text-decoration-none">
+            <a asp-action="Listing" asp-route-id="@item?.Id" class="text-decoration-none">
                 <figure class="card-header d-flex align-items-center justify-content-between annonce-block">
                     <div class="annonce-image-container">
                         <img class="annonce-image" src="@(item.Images != null && item.Images.Any() ? item.Images.FirstOrDefault().ImageLink : "/img/general/media-unavailable.png")" />
@@ -68,15 +68,7 @@
                             <span class="annonce-texte">@Html.DisplayFor(modelItem => item.Annee)</span>
                         </div>
                         <div class="annonce-prix-edit">
-                            <div class="annonce-edit-block">
-                                @if (SignInManager.IsSignedIn(User))
-                                {
 
-                                    <a class="icon-link" asp-action="Edit" asp-route-id="@item?.Id">🖋️</a>
-                                    <a class="icon-link" asp-action="Delete" asp-route-id="@item?.Id">❌</a>
-
-                                }
-                            </div>
                             <span class="annonce-prix">
                                 @Html.DisplayFor(modelItem => item.PrixVente) €
                             </span>
@@ -85,6 +77,14 @@
                     </figcaption>
                 </figure>
             </a>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <div class="annonce-edit-block">
+                    <a class="btn icon-link" asp-action="AdminIndex" title="Retour à la liste administrateur">📋</a>
+                    <a class="btn icon-link" asp-action="Edit" asp-route-id="@item?.Id" onclick="logIssue">🖋️</a>
+                    <a class="btn icon-link" asp-action="Delete" asp-route-id="@item?.Id">❌</a>
+                </div>
+            }
         </div>
     }
 </section>
