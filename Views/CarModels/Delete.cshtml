@@ -2,14 +2,16 @@
 
 @{
     ViewData["Title"] = "Suppression | Modèle";
+    ViewData["ControllerName"] = "CarModels";
+    ViewData["ActionName"] = "Index";
+    ViewData["NomPage"] = "Supprimer un modèle";
 }
 
-<h1>Modèles</h1>
+<partial name="_AdminPagesTitle" />
 
 <h3>Êtes-vous sûr de voloir supprimer ce modèle?</h3>
 <p>Toutes les finitions associées à ce modèle seront supprimées</p>
 <div>
-    <h4>CarModel</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -28,7 +30,6 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Supprimer" class="btn btn-danger" />
     </form>
 </div>

@@ -1,15 +1,17 @@
 ﻿@model ExpressVoitures.Data.Vehicle
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Modification | Véhicule";
+    ViewData["NomPage"] = "Modifier un véhicule";
+    ViewData["ControllerName"] = "Vehicles";
+    ViewData["ActionName"] = "AdminIndex";
 }
 
-<h1>Edit</h1>
+<partial name="_AdminPagesTitle" />
 
-<h4>Vehicle</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
@@ -23,6 +25,7 @@
                 <input asp-for="Annee" type="number" class="form-control" />
                 <span asp-validation-for="Annee" class="text-danger"></span>
             </div>
+            <partial name="_VehicleSelectPartial" model="Model" />
             <div class="form-group">
                 <label asp-for="DateAchat" class="control-label"></label>
                 <input asp-for="DateAchat" type="date" class="form-control" />
@@ -34,17 +37,17 @@
                 <span asp-validation-for="PrixAchat" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DateDisponibiliteVente" class="control-label"></label>
-                <input asp-for="DateDisponibiliteVente" type="date" class="form-control" />
-                <span asp-validation-for="DateDisponibiliteVente" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Reparations" class="control-label">Liste des réparations</label>
                 <input asp-for="Reparations" class="form-control" type="textarea" />
             </div>
             <div class="form-group">
                 <label asp-for="CoutsReparation" class="control-label">Coût des réparations</label>
                 <input asp-for="CoutsReparation" type="number" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="DateDisponibiliteVente" class="control-label"></label>
+                <input asp-for="DateDisponibiliteVente" type="date" class="form-control" />
+                <span asp-validation-for="DateDisponibiliteVente" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PrixVente" class="control-label"></label>
@@ -57,116 +60,56 @@
                 <span asp-validation-for="DateVente" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label">Marque</label>
-                <select id="marqueSelect" asp-for="MarqueId" class="form-control" onchange="updateModeleSelect()">
-                    <option value="">Sélectionner une marque</option>
-                    @foreach (var marque in ViewBag.Marques)
-                    {
-                        <option value="@marque.Id">@marque.Nom</option>
-                    }
-                </select>
-                <span asp-validation-for="MarqueId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Modele" class="control-label"></label>
-                <select id="modeleSelect" asp-for="ModeleId" class="form-control" onchange="updateFinitionSelect()" disabled>
-                    <option value="">Sélectionner un modèle</option>
-                </select>
-                <span asp-validation-for="ModeleId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Finition" class="control-label"></label>
-                <select id="finitionSelect" asp-for="FinitionId" class="form-control" disabled>
-                    <option value="">Sélectionner une finition</option>
-                </select>
-                <span asp-validation-for="FinitionId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label for="images" class="control-label">Images:</label>
                 <input type="file" id="images" name="images" class="form-control" multiple />
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            <div class="form-group my-3">
                 <label asp-for="IsPublished" class="control-label">Publier l'annonce</label>
                 <input asp-for="IsPublished" class="form-check-input" type="checkbox" id="IsPublished" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <hr />
+            <div class="form-group">
+                <input type="submit" value="Sauvegarder" class="btn button-annonce-filtre" />
             </div>
         </form>
-        <h4>Images existantes</h4>
-        <div>
-            @foreach (var image in Model.Images)
-            {
-                <div class="image-container position-relative mb-3">
-                    <img src="@image.ImageLink" alt="Image du véhicule" class="img-fluid" />
-                    <form asp-action="DeleteImage" method="post" class="position-absolute top-0 end-0">
-                        <input type="hidden" name="imageId" value="@image.Id" />
-                        <button type="submit" class="btn btn-danger btn-sm">×</button>
-                    </form>
-                </div>
-            }
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <label>Images existantes</label>
+            <div class="d-flex flex-row flex-wrap">
+                @foreach (var image in Model.Images)
+                {
+                    <div class="col-3 m-2">
+                        <div class="image-container position-relative mb-3">
+                            <img src="@image.ImageLink" alt="Image du véhicule" class="img-fluid" />
+                            <form asp-action="DeleteImage" method="post" class="position-absolute top-0 end-0">
+                                <input type="hidden" name="imageId" value="@image.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm">×</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
         </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
     <script>
         function updateModeleSelect() {
-            var marqueId = document.getElementById("marqueSelect").value;
-            var modeleSelect = document.getElementById("modeleSelect");
-            modeleSelect.innerHTML = "";
-            if (marqueId !== "") {
-                var modeles = @Html.Raw(Json.Serialize(ViewBag.Modeles));
-                var filteredModeles = modeles.filter(function (modele) {
-                    return modele.marqueId == marqueId;
-                });
-                filteredModeles.forEach(function (modele) {
-                    var option = document.createElement("option");
-                    option.text = modele.nom;
-                    option.value = modele.id;
-                    modeleSelect.appendChild(option);
-                });
-                modeleSelect.disabled = false;
-            } else {
-                modeleSelect.disabled = true;
-            }
+            updateSelect("marqueSelect", "modeleSelect", @Html.Raw(Json.Serialize(ViewBag.Modeles)), "id", "marqueId", @(ViewBag.ModeleId != null ? ViewBag.ModeleId : ""));
             updateFinitionSelect();
         }
 
         function updateFinitionSelect() {
-            var modeleId = document.getElementById("modeleSelect").value;
-            var finitionSelect = document.getElementById("finitionSelect");
-            finitionSelect.innerHTML = "";
-
-            if (modeleId !== "") {
-                var finitions = @Html.Raw(Json.Serialize(ViewBag.Finitions));
-                var filteredFinitions = finitions.filter(function (finition) {
-                    return finition.modeleId == modeleId;
-                });
-
-                filteredFinitions.forEach(function (finition) {
-                    var option = document.createElement("option");
-                    option.text = finition.nom;
-                    option.value = finition.id;
-                    finitionSelect.appendChild(option);
-                });
-
-                finitionSelect.disabled = false;
-            } else {
-                finitionSelect.disabled = true;
-            }
+            updateSelect("modeleSelect", "finitionSelect", @Html.Raw(Json.Serialize(ViewBag.Finitions)), "id", "modeleId", @(ViewBag.FinitionId != null ? ViewBag.FinitionId : ""));
         }
-
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             updateModeleSelect();
         });
     </script>

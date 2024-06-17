@@ -14,6 +14,12 @@
             {
                 <div class="carousel-item @(firstSlide ? "active" : "")">
                     <a asp-controller="Vehicles" asp-action="Listing" asp-route-id="@vehicle.Id">
+                        @if (vehicle.DateVente != null)
+                        {
+                            <div class="sold-out">
+                                <h4 class="sold-out-text-semitransparent">Véhicule vendu</h4>
+                            </div>
+                        }
                         <img class="d-block w-100" src="@(vehicle.Images != null && vehicle.Images.Any() ? vehicle.Images.FirstOrDefault().ImageLink : "/img/general/media-unavailable.png")" alt="@vehicle.Annee @vehicle.Marque.Nom @vehicle.Modele.Nom @vehicle.Finition.Nom">
                         <div class="carousel-caption controls-background d-flex flex-row justify-content-between row m-auto">
                             <div class="w-25 mx-5">

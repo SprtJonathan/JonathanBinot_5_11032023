@@ -2,9 +2,12 @@
 
 @{
     ViewData["Title"] = "Finitions";
+    ViewData["ControllerName"] = "Admin";
+    ViewData["ActionName"] = "Index";
+    ViewData["NomPage"] = "Finitions";
 }
 
-<partial name="_AdminPagesTitle" title="Finitions" />
+<partial name="_AdminPagesTitle" />
 
 <p>
     <a class="create-element" asp-action="Create">Ajouter une finition</a>
@@ -45,9 +48,7 @@
                         @Html.DisplayFor(modelItem => item.Modele.Marque.Nom)
                     </td>
                     <td>
-                        <a class="btn icon-link" asp-action="Details" asp-route-id="@item.Id" title="Retour à la liste administrateur">📋</a>
-                        <a class="btn icon-link" asp-action="Edit" asp-route-id="@item.Id" onclick="logIssue" title="Éditer">🖋️</a>
-                        <a class="btn icon-link" asp-action="Delete" asp-route-id="@item.Id" title="Supprimer">❌</a>
+                        <partial name="_DetailsNavPartial" model="item" />
                     </td>
                 </tr>
             }

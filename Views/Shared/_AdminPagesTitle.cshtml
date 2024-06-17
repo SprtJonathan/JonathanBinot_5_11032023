@@ -1,4 +1,4 @@
 ﻿<div class="row">
-    <a asp-area="" asp-controller="Admin" asp-action="Index" class="col-1 btn back-button">🔙</a>
-    <h1 class="col">@ViewData["Title"]</h1>
+    <a asp-area="" asp-controller="@ViewData["ControllerName"]" asp-action="@ViewData["ActionName"]" class="col-1 btn back-button">🔙</a>
+    <h1 class="col">@ViewData["NomPage"]</h1>
 </div>

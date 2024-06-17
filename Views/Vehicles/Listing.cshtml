@@ -161,7 +161,7 @@
 <div>
     @if (SignInManager.IsSignedIn(User))
     {
-        <a asp-action="AdminIndex" title="Retour à la liste administrateur" class="icon-link">📋</a>
+        <a asp-action="AdminIndex" title="Retour à la liste administrateur" class="icon-link">🔧</a>
         <a asp-action="Edit" asp-route-id="@Model?.Id" title="Modifier l'annonce" class="icon-link">🖋️</a>
         <a asp-action="Delete" asp-route-id="@Model?.Id" title="Supprimer l'annonce" class="icon-link">❌</a>
     }

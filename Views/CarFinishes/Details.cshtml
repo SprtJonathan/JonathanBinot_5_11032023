@@ -2,12 +2,15 @@
 
 @{
     ViewData["Title"] = "Détails | Finition";
+    ViewData["ControllerName"] = "CarFinishes";
+    ViewData["ActionName"] = "Index";
+    ViewData["NomPage"] = "Détails de la finition";
 }
 
-<h1>Détails de la finition</h1>
+<partial name="_AdminPagesTitle" />
 
 <div>
-    <h4>Finitions</h4>
+    <h4>Finition</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -30,7 +33,5 @@
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<partial name="_DetailsNavPartial" model="Model" />

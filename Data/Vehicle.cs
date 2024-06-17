@@ -19,6 +19,7 @@ namespace ExpressVoitures.Data
 
         [Required(ErrorMessage = "La date d'achat est requise.")]
         [Display(Name = "Date d'achat")]
+        [YearGreaterThan("Annee", ErrorMessage = "L'année de la date d'achat doit être supérieure ou égale à l'année du véhicule et avant la date actuelle.")]
         public DateTime DateAchat { get; set; }
 
         [Display(Name = "Prix d'achat")]
@@ -34,6 +35,7 @@ namespace ExpressVoitures.Data
 
         [Required(ErrorMessage = "La date de disponibilité de vente est requise.")]
         [Display(Name = "Date de disponibilité de vente")]
+        [GreaterThan("DateAchat", ErrorMessage = "La date de disponibilité de vente doit être supérieure à la date d'achat.")]
         public DateTime DateDisponibiliteVente { get; set; }
 
         [Required(ErrorMessage = "Le prix de vente est requis.")]

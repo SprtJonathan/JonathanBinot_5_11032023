@@ -1,12 +1,14 @@
 ﻿@model ExpressVoitures.Data.Vehicle
 
 @{
-    ViewData["Title"] = "Ajout | Véhicules";
+    ViewData["Title"] = "Ajout | Véhicule";
+    ViewData["ControllerName"] = "Vehicles";
+    ViewData["ActionName"] = "Index";
+    ViewData["NomPage"] = "Ajouter un véhicule";
 }
 
-<h1>Ajouter un véhicule</h1>
+<partial name="_AdminPagesTitle" />
 
-<h4>Véhicule</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -22,6 +24,7 @@
                 <input asp-for="Annee" type="number" class="form-control" />
                 <span asp-validation-for="Annee" class="text-danger"></span>
             </div>
+            <partial name="_VehicleSelectPartial" model="Model" />
             <div class="form-group">
                 <label asp-for="DateAchat" class="control-label"></label>
                 <input asp-for="DateAchat" type="date" class="form-control" />
@@ -33,17 +36,17 @@
                 <span asp-validation-for="PrixAchat" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DateDisponibiliteVente" class="control-label"></label>
-                <input asp-for="DateDisponibiliteVente" type="date" class="form-control" />
-                <span asp-validation-for="DateDisponibiliteVente" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Reparations" class="control-label">Liste des réparations</label>
                 <input asp-for="Reparations" class="form-control" type="textarea" />
             </div>
             <div class="form-group">
                 <label asp-for="CoutsReparation" class="control-label">Coût des réparations</label>
                 <input asp-for="CoutsReparation" type="number" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="DateDisponibiliteVente" class="control-label"></label>
+                <input asp-for="DateDisponibiliteVente" type="date" class="form-control" />
+                <span asp-validation-for="DateDisponibiliteVente" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PrixVente" class="control-label"></label>
@@ -54,62 +57,40 @@
                 <label asp-for="DateVente" class="control-label"></label>
                 <input asp-for="DateVente" type="date" class="form-control" />
                 <span asp-validation-for="DateVente" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Marque</label>
-                <select id="marqueSelect" asp-for="MarqueId" class="form-control" onchange="updateModeleSelect()">
-                    <option value="">Sélectionner une marque</option>
-                    @foreach (var marque in ViewBag.Marques)
-                    {
-                        <option value="@marque.Id">@marque.Nom</option>
-                    }
-                </select>
-                <span asp-validation-for="MarqueId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Modele" class="control-label"></label>
-                <select id="modeleSelect" asp-for="ModeleId" class="form-control" onchange="updateFinitionSelect()" disabled></select>
-                <span asp-validation-for="ModeleId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Finition" class="control-label"></label>
-                <select id="finitionSelect" asp-for="FinitionId" class="form-control" disabled></select>
-                <span asp-validation-for="FinitionId" class="text-danger"></span>
-            </div>
+            </div>           
             <div class="form-group">
                 <label for="images" class="control-label">Images:</label>
                 <input type="file" id="images" name="images" class="form-control" multiple />
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            <div class="form-group my-3">
                 <label asp-for="IsPublished" class="control-label">Publier l'annonce</label>
                 <input asp-for="IsPublished" class="form-check-input" type="checkbox" id="IsPublished" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <hr />
+            <div class="form-group">
+                <input type="submit" value="Ajouter" class="btn button-annonce-filtre" />
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
     <script>
         function updateModeleSelect() {
-            updateSelect("marqueSelect", "modeleSelect", @Html.Raw(Json.Serialize(ViewBag.Modeles)), "id", "marqueId");
+            updateSelect("marqueSelect", "modeleSelect", @Html.Raw(Json.Serialize(ViewBag.Modeles)), "id", "marqueId", @(ViewBag.ModeleId != null ? ViewBag.ModeleId : ""));
             updateFinitionSelect();
         }
 
         function updateFinitionSelect() {
-            updateSelect("modeleSelect", "finitionSelect", @Html.Raw(Json.Serialize(ViewBag.Finitions)), "id", "modeleId");
+            updateSelect("modeleSelect", "finitionSelect", @Html.Raw(Json.Serialize(ViewBag.Finitions)), "id", "modeleId", @(ViewBag.FinitionId != null ? ViewBag.FinitionId : ""));
         }
+        document.addEventListener("DOMContentLoaded", function () {
+            updateModeleSelect();
+        });
     </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

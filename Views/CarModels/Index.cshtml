@@ -2,49 +2,50 @@
 
 @{
     ViewData["Title"] = "Modèles";
+    ViewData["NomPage"] = "Modèles";
+    ViewData["ControllerName"] = "Admin";
+    ViewData["ActionName"] = "Index";
 }
 
-<partial name="_AdminPagesTitle" title="Modèles" />
+<partial name="_AdminPagesTitle" />
 
 <p>
     <a class="create-element" asp-action="Create">Ajouter un modèle</a>
 </p>
 <div class="table-container">
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nom)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Marque)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nom)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Marque.Nom)
-                </td>
-                <td>
-                    <a class="btn icon-link" asp-action="Details" asp-route-id="@item.Id" title="Retour à la liste administrateur">📋</a>
-                    <a class="btn icon-link" asp-action="Edit" asp-route-id="@item.Id" onclick="logIssue" title="Éditer">🖋️</a>
-                    <a class="btn icon-link" asp-action="Delete" asp-route-id="@item.Id" title="Supprimer">❌</a>
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nom)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Marque)
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nom)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Marque.Nom)
+                    </td>
+                    <td>
+                        <partial name="_DetailsNavPartial" model="item" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>

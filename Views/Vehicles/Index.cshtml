@@ -6,7 +6,7 @@
     ViewData["Title"] = "Annonces";
 }
 
-<h1>Annonces</h1>
+<h1 class="text-center">Annonces</h1>
 
 @if (SignInManager.IsSignedIn(User))
 {
@@ -21,28 +21,51 @@
         </button>
     </div>
     <div class="collapse" id="filterCollapse">
-        <form class="card card-body flex-row row" method="get" asp-action="Index">
-            <div class="form-group col">
-                <label class="control-label">Marque</label>
-                <select id="marqueSelect" name="MarqueId" class="form-control" onchange="updateModeleSelect()" value=@ViewBag.Filters.MarqueId>
-                    <option value="">Sélectionner une marque</option>
-                    @foreach (var marque in ViewBag.Marques)
-                    {
-                        <option value="@marque.Id">@marque.Nom</option>
-                    }
-                </select>
+        <form class="card card-body flex-col" method="get" asp-action="Index">
+            <div class="row">
+                <div class="form-group col">
+                    <label class="control-label">Marque</label>
+                    <select id="marqueSelect" name="MarqueId" class="form-control" onchange="updateModeleSelect()">
+                        <option value="">Sélectionner une marque</option>
+                        @foreach (var marque in ViewBag.Marques)
+                        {
+                            var selectedBrand = ViewBag.Filters.MarqueId == marque.Id ? "selected" : null;
+                            <option value="@marque.Id" selected="@selectedBrand">@marque.Nom</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col">
+                    <label class="control-label">Modèle</label>
+                    <select id="modeleSelect" name="ModeleId" class="form-control" onchange="updateFinitionSelect()" disabled>
+                        <option value="">Sélectionner un modèle</option>
+                        @foreach (var modele in ViewBag.Modeles)
+                        {
+                            var selectedModel = ViewBag.Filters.ModeleId == modele.Id ? "selected" : null;
+                            <option value="@modele.Id" selected="@selectedModel">@modele.Nom</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col">
+                    <label class="control-label">Finition</label>
+                    <select id="finitionSelect" name="FinitionId" class="form-control" disabled>
+                        <option value="">Sélectionner une finition</option>
+                        @foreach (var finition in ViewBag.Finitions)
+                        {
+                            var selectedFinish = ViewBag.Filters.FinitionId == finition.Id ? "selected" : null;
+                            <option value="@finition.Id" selected="@selectedFinish">@finition.Nom</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col">
+                    <label class="control-label">Année</label>
+                    <input type="number" name="Annee" class="form-control" />
+                </div>
             </div>
-            <div class="form-group col">
-                <label class="control-label">Modèle</label>
-                <select id="modeleSelect" name="ModeleId" class="form-control" onchange="updateFinitionSelect()" disabled value="(@ViewBag.Filters.ModeleId)"><option value=(@ViewBag.Filters.MarqueId)>Sélectionner un modèle</option></select>
-            </div>
-            <div class="form-group col">
-                <label class="control-label">Finition</label>
-                <select id="finitionSelect" name="FinitionId" class="form-control" disabled value="(@ViewBag.Filters.FinitionId)"><option value=(@ViewBag.Filters.MarqueId)>Sélectionner une finition</option></select>
-            </div>
-            <div class="form-group col">
-                <label class="control-label">Année</label>
-                <input type="number" name="Annee" class="form-control" />
+            <div class="row">
+                <div class="form-group col">
+                    <label class="control-label">Vehicules disponibles seulement</label>
+                    <input name="Disponible" class="form-check-input" type="checkbox" id="IsPublished" value="true" checked=@ViewBag.Filters.Disponible />
+                </div>
             </div>
             <div class="form-group d-flex justify-content-center">
                 <button type="submit" class="btn button-annonce-filtre">Rechercher</button>
@@ -51,47 +74,56 @@
     </div>
 </section>
 <section id="offer-section" class="d-flex flex-lg-wrap align-items-center justify-content-start annonce-container">
-    @foreach (var item in Model)
-    {
-        <div id="vehicle-@item.Id-block" class="annonce">
-            <a asp-action="Listing" asp-route-id="@item?.Id" class="text-decoration-none">
-                <figure class="card-header d-flex align-items-center justify-content-between annonce-block">
-                    @if (item.DateVente != null)
+    @{
+        if (!Model.Any())
+        {
+            <div>Aucune annonce trouvée</div>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <div id="vehicle-@item.Id-block" class="annonce">
+                    <a asp-action="Listing" asp-route-id="@item?.Id" class="text-decoration-none">
+                        <figure class="card-header d-flex align-items-center justify-content-between annonce-block">
+                            @if (item.DateVente != null)
+                            {
+                                <div class="sold-out">
+                                    <h4 class="sold-out-text">Véhicule vendu</h4>
+                                </div>
+                            }
+                            <div class="annonce-image-container">
+                                <img class="annonce-image" src="@(item.Images != null && item.Images.Any() ? item.Images.FirstOrDefault().ImageLink : "/img/general/media-unavailable.png")" />
+                            </div>
+                            <figcaption class="annonce-text-block">
+                                <div class="d-flex flex-column">
+                                    <span class="annonce-titre">
+                                        @Html.DisplayFor(modelItem => item.Marque.Nom) @Html.DisplayFor(modelItem => item.Modele.Nom)
+                                    </span>
+                                    <span class="annonce-texte">@Html.DisplayFor(modelItem => item.Finition.Nom)</span>
+                                    <span class="annonce-texte">@Html.DisplayFor(modelItem => item.Annee)</span>
+                                </div>
+                                <div class="annonce-prix-edit">
+
+                                    <span class="annonce-prix">
+                                        @Html.DisplayFor(modelItem => item.PrixVente) €
+                                    </span>
+
+                                </div>
+                            </figcaption>
+                        </figure>
+                    </a>
+                    @if (SignInManager.IsSignedIn(User))
                     {
-                        <div class="sold-out">
-                            <h4 class="sold-out-text">Véhicule vendu</h4>
+                        <div class="annonce-edit-block">
+                            <a class="btn icon-link" asp-action="AdminIndex" title="Retour à la liste administrateur">📋</a>
+                            <a class="btn icon-link" asp-action="Edit" asp-route-id="@item?.Id" onclick="logIssue">🖋️</a>
+                            <a class="btn icon-link" asp-action="Delete" asp-route-id="@item?.Id">❌</a>
                         </div>
                     }
-                    <div class="annonce-image-container">
-                        <img class="annonce-image" src="@(item.Images != null && item.Images.Any() ? item.Images.FirstOrDefault().ImageLink : "/img/general/media-unavailable.png")" />
-                    </div>
-                    <figcaption class="annonce-text-block">
-                        <div class="d-flex flex-column">
-                            <span class="annonce-titre">
-                                @Html.DisplayFor(modelItem => item.Marque.Nom) @Html.DisplayFor(modelItem => item.Modele.Nom)
-                            </span>
-                            <span class="annonce-texte">@Html.DisplayFor(modelItem => item.Finition.Nom)</span>
-                            <span class="annonce-texte">@Html.DisplayFor(modelItem => item.Annee)</span>
-                        </div>
-                        <div class="annonce-prix-edit">
-
-                            <span class="annonce-prix">
-                                @Html.DisplayFor(modelItem => item.PrixVente) €
-                            </span>
-
-                        </div>
-                    </figcaption>
-                </figure>
-            </a>
-            @if (SignInManager.IsSignedIn(User))
-            {
-                <div class="annonce-edit-block">
-                    <a class="btn icon-link" asp-action="AdminIndex" title="Retour à la liste administrateur">📋</a>
-                    <a class="btn icon-link" asp-action="Edit" asp-route-id="@item?.Id" onclick="logIssue">🖋️</a>
-                    <a class="btn icon-link" asp-action="Delete" asp-route-id="@item?.Id">❌</a>
                 </div>
             }
-        </div>
+        }
     }
 </section>
 <script>
@@ -103,4 +135,7 @@
     function updateFinitionSelect() {
         updateSelect("modeleSelect", "finitionSelect", @Html.Raw(Json.Serialize(ViewBag.Finitions)), "id", "modeleId");
     }
+    document.addEventListener("DOMContentLoaded", function () {
+        updateModeleSelect();
+    });
 </script>

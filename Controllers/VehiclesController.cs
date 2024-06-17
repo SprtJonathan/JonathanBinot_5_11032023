@@ -55,6 +55,11 @@ namespace ExpressVoitures.Controllers
                 {
                     query = query.Where(v => v.Annee == filters.Annee.Value);
                 }
+
+                if (filters.Disponible.HasValue && filters.Disponible.Value)
+                {
+                    query = query.Where(v => v.DateVente == null);
+                }
                 ViewBag.Filters = filters;
             }
 
@@ -62,6 +67,8 @@ namespace ExpressVoitures.Controllers
             ViewBag.Marques = marques.Select(m => new { Id = m.Id, Nom = m.Nom }).ToList();
             ViewBag.Modeles = _context.Modeles.Select(model => new { Id = model.Id, Nom = model.Nom, MarqueId = model.MarqueId }).ToList();
             ViewBag.Finitions = _context.Finitions.Select(f => new { Id = f.Id, Nom = f.Nom, ModeleId = f.ModeleId }).ToList();
+
+            ViewBag.Filters = filters;
 
             var vehicles = await query.ToListAsync();
             return View(vehicles);
@@ -183,14 +190,17 @@ namespace ExpressVoitures.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(AdminIndex));
             }
 
             // Si la validation échoue, rechargez les listes déroulantes et affichez à nouveau le formulaire avec les erreurs de validation
             var marques = _context.Marques.ToList();
-            ViewBag.Marques = marques.Select(m => new { Id = m.Id, Nom = m.Nom }).ToList();
-            ViewBag.Modeles = _context.Modeles.Select(model => new { Id = model.Id, Nom = model.Nom, MarqueId = model.MarqueId }).ToList();
-            ViewBag.Finitions = _context.Finitions.Select(f => new { Id = f.Id, Nom = f.Nom, ModeleId = f.ModeleId }).ToList();
+            ViewBag.Marques = marques.Select(m => new { m.Id, m.Nom }).ToList();
+            ViewBag.Modeles = _context.Modeles.Select(model => new { model.Id, model.Nom, model.MarqueId }).ToList();
+            ViewBag.Finitions = _context.Finitions.Select(f => new { f.Id, f.Nom, f.ModeleId }).ToList();
+
+            ViewBag.ModeleId = vehicle.ModeleId;
+            ViewBag.FinitionId = vehicle.FinitionId;
             return View(vehicle);
         }
 
@@ -217,6 +227,9 @@ namespace ExpressVoitures.Controllers
             ViewBag.Marques = marques.Select(m => new { m.Id, m.Nom }).ToList();
             ViewBag.Modeles = _context.Modeles.Select(model => new { model.Id, model.Nom,model.MarqueId }).ToList();
             ViewBag.Finitions = _context.Finitions.Select(f => new { f.Id, f.Nom, f.ModeleId }).ToList();
+
+            ViewBag.ModeleId = vehicle.ModeleId;
+            ViewBag.FinitionId = vehicle.FinitionId;
             return View(vehicle);
         }
 
@@ -288,7 +301,7 @@ namespace ExpressVoitures.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(AdminIndex));
             }
 
             var marques = _context.Marques.ToList();
@@ -296,9 +309,8 @@ namespace ExpressVoitures.Controllers
             ViewBag.Modeles = _context.Modeles.Select(model => new { model.Id, model.Nom, model.MarqueId }).ToList();
             ViewBag.Finitions = _context.Finitions.Select(f => new { f.Id, f.Nom, f.ModeleId }).ToList();
 
-            ViewData["FinitionId"] = new SelectList(_context.Finitions, "Id", "Nom", vehicle.FinitionId);
-            ViewData["MarqueId"] = new SelectList(_context.Marques, "Id", "Nom", vehicle.MarqueId);
-            ViewData["ModeleId"] = new SelectList(_context.Modeles, "Id", "Nom", vehicle.ModeleId);
+            ViewBag.ModeleId = vehicle.ModeleId;
+            ViewBag.FinitionId = vehicle.FinitionId;
             return View(vehicle);
         }
 
@@ -355,7 +367,7 @@ namespace ExpressVoitures.Controllers
                 }
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(AdminIndex));
         }
 
         [HttpPost]

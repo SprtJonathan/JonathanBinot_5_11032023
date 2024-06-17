@@ -1,4 +1,4 @@
-﻿function updateSelect(sourceSelectId, targetSelectId, data, idField, parentIdField) {
+﻿function updateSelect(sourceSelectId, targetSelectId, data, idField, parentIdField, selectedFieldId = -1) {
     var sourceId = document.getElementById(sourceSelectId).value;
     var targetSelect = document.getElementById(targetSelectId);
     targetSelect.innerHTML = "";
@@ -12,6 +12,8 @@
             var option = document.createElement("option");
             option.text = item.nom;
             option.value = item[idField];
+            console.log(item[idField] + " " + selectedFieldId + " donc " + (selectedFieldId == item[idField]))
+            option.selected = selectedFieldId == item[idField] ? "selected" : "";
             targetSelect.appendChild(option);
         });
 

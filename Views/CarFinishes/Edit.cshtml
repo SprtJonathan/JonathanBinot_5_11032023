@@ -2,11 +2,13 @@
 
 @{
     ViewData["Title"] = "Modification | Finition";
+    ViewData["ControllerName"] = "CarFinishes";
+    ViewData["ActionName"] = "Index";
+    ViewData["NomPage"] = "Modifier une finition";
 }
 
-<h1>Modifier une finition</h1>
+<partial name="_AdminPagesTitle" />
 
-<h4>Finitions</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -28,14 +30,10 @@
                 <span asp-validation-for="Nom" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Sauvegarder" class="btn button-annonce-filtre" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

@@ -4,9 +4,12 @@
 
 @{
     ViewData["Title"] = "Véhicules";
+    ViewData["NomPage"] = "Véhicules";
+    ViewData["ControllerName"] = "Admin";
+    ViewData["ActionName"] = "Index";
 }
 
-<partial name="_AdminPagesTitle" title="Véhicules" />
+<partial name="_AdminPagesTitle" />
 
 <p>
     <a class="create-element" asp-action="Create">Créer une nouvelle annonce</a>
@@ -53,10 +56,10 @@
                         @Html.DisplayFor(modelItem => item.Finition.Nom)
                     </td>
                     <td>
-                        <a asp-action="Listing" asp-route-id="@item.Id" title="Voir l'annonce">📰</a>
-                        <a asp-action="Edit" asp-route-id="@item.Id" title="Modifier l'annonce">🖋️</a>
-                        <a asp-action="Details" asp-route-id="@item.Id" title="Détails de l'annonce">📋</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" title="Supprimer l'annonce'">❌</a>
+                        <div class="d-flex flex-row">
+                            <a class="btn icon-link" asp-action="Listing" asp-route-id="@item.Id" title="Voir l'annonce">📰</a>
+                            <partial name="_DetailsNavPartial" model="item" />
+                        </div>
                     </td>
                 </tr>
             }

@@ -2,12 +2,12 @@
 
 @{
     ViewData["Title"] = "Ajout | Modèles";
-    
+    ViewData["ControllerName"] = "CarModels";
+    ViewData["ActionName"] = "Index";
+    ViewData["NomPage"] = "Ajouter un modèle";
 }
 
-<h1>Modèles</h1>
-
-<h4>Ajouter un modèle</h4>
+<partial name="_AdminPagesTitle" />
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -22,15 +22,12 @@
                 <input asp-for="Nom" class="form-control" />
                 <span asp-validation-for="Nom" class="text-danger"></span>
             </div>
+            <hr />
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Ajouter" class="btn button-annonce-filtre" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
