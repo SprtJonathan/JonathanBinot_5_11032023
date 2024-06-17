@@ -16,7 +16,13 @@
         <h3 class="d-flex justify-content-between align-items-center">@Model.PrixVente €</h3>
     </div>
 </div>
-<div>
+<div class="listing">
+    @if (Model.DateVente != null)
+    {
+        <div class="sold-out">
+            <h4 class="sold-out-text-semitransparent">Véhicule vendu</h4>
+        </div>
+    }
     <div class="gallery-details row">
         <section class="gallery-section col">
             <div class="row">

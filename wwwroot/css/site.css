@@ -1,5 +1,10 @@
-﻿html {
+﻿@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+html {
     font-size: 14px;
+    font-family: "Rajdhani", sans-serif;
+    font-weight: 500;
+    font-style: normal;
 }
 
 @media (min-width: 768px) {
@@ -99,6 +104,7 @@ body {
 }
 
 .annonce-block {
+    position: relative;
     padding: 10px;
 }
 
@@ -218,3 +224,39 @@ body {
         margin-right: 10px;
         text-align: center;
     }
+
+.sold-out {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(50,50,50,0.5);
+    z-index: 99;
+    border-radius: 10px;
+}
+
+.sold-out-text {
+    width: 100%;
+    color: white;
+    font-size: 30px;
+    padding: 20px 0;
+    background-color: black;
+    text-align: center;
+}
+
+.listing {
+    position: relative;
+}
+
+.sold-out-text-semitransparent {
+    width: 100%;
+    color: white;
+    font-size: 30px;
+    padding: 20px 0;
+    background-color: rgba(0,0,0,0.7);
+    text-align: center;
+}

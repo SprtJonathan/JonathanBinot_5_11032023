@@ -56,6 +56,12 @@
         <div id="vehicle-@item.Id-block" class="annonce">
             <a asp-action="Listing" asp-route-id="@item?.Id" class="text-decoration-none">
                 <figure class="card-header d-flex align-items-center justify-content-between annonce-block">
+                    @if (item.DateVente != null)
+                    {
+                        <div class="sold-out">
+                            <h4 class="sold-out-text">Véhicule vendu</h4>
+                        </div>
+                    }
                     <div class="annonce-image-container">
                         <img class="annonce-image" src="@(item.Images != null && item.Images.Any() ? item.Images.FirstOrDefault().ImageLink : "/img/general/media-unavailable.png")" />
                     </div>
