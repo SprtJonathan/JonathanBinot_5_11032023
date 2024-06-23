@@ -25,7 +25,7 @@ Vous avez la section ConnectionStrings qui définit les chaînes de connexion po
         "ApplicationDbContextConnection": "Server=(localdb)\\mssqllocaldb;Database=ExpressVoitures;Trusted_Connection=True;MultipleActiveResultSets=true"
       }
 
-**DefaultConnection** - chaîne de connexion à la base de données de l’application.
+**DefaultConnection** - chaîne de connexion à la base de données de l’application. (Assurez-vous que le nom de l'instance est correct sur votre poste. Le repository utilise SQLEXPRESS04 car il s'agit de l'instance 04 sur mon poste. Il faudra probablement mettre SQLEXPRESS dans votre cas)
 
 **ApplicationDbContextConnection** - L'application utilise Identity pour la gestion de comptes. Ce package utilise une base de données différente de celle du site web.
 
