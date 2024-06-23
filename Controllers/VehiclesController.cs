@@ -64,11 +64,15 @@ namespace ExpressVoitures.Controllers
             }
 
             var marques = _context.Marques.ToList();
-            ViewBag.Marques = marques.Select(m => new { Id = m.Id, Nom = m.Nom }).ToList();
-            ViewBag.Modeles = _context.Modeles.Select(model => new { Id = model.Id, Nom = model.Nom, MarqueId = model.MarqueId }).ToList();
-            ViewBag.Finitions = _context.Finitions.Select(f => new { Id = f.Id, Nom = f.Nom, ModeleId = f.ModeleId }).ToList();
+            ViewBag.Marques = marques.Select(m => new { m.Id, m.Nom }).ToList();
+            ViewBag.Modeles = _context.Modeles.Select(model => new { model.Id, model.Nom, model.MarqueId }).ToList();
+            ViewBag.Finitions = _context.Finitions.Select(f => new { f.Id, f.Nom, f.ModeleId }).ToList();
 
             ViewBag.Filters = filters;
+
+            ViewBag.MarqueId = filters.MarqueId;
+            ViewBag.ModeleId = filters.ModeleId;
+            ViewBag.FinitionId = filters.FinitionId;
 
             var vehicles = await query.ToListAsync();
             return View(vehicles);

@@ -21,16 +21,15 @@
         </button>
     </div>
     <div class="collapse" id="filterCollapse">
-        <form class="card card-body flex-col" method="get" asp-action="Index">
-            <div class="row">
+        <form id="filters-form" class="card card-body flex-col" method="get" asp-action="Index">
+            <div class="row m-3">
                 <div class="form-group col">
                     <label class="control-label">Marque</label>
                     <select id="marqueSelect" name="MarqueId" class="form-control" onchange="updateModeleSelect()">
                         <option value="">Sélectionner une marque</option>
                         @foreach (var marque in ViewBag.Marques)
                         {
-                            var selectedBrand = ViewBag.Filters.MarqueId == marque.Id ? "selected" : null;
-                            <option value="@marque.Id" selected="@selectedBrand">@marque.Nom</option>
+                            <option value="@marque.Id">@marque.Nom</option>
                         }
                     </select>
                 </div>
@@ -38,30 +37,24 @@
                     <label class="control-label">Modèle</label>
                     <select id="modeleSelect" name="ModeleId" class="form-control" onchange="updateFinitionSelect()" disabled>
                         <option value="">Sélectionner un modèle</option>
-                        @foreach (var modele in ViewBag.Modeles)
-                        {
-                            var selectedModel = ViewBag.Filters.ModeleId == modele.Id ? "selected" : null;
-                            <option value="@modele.Id" selected="@selectedModel">@modele.Nom</option>
-                        }
                     </select>
                 </div>
                 <div class="form-group col">
                     <label class="control-label">Finition</label>
                     <select id="finitionSelect" name="FinitionId" class="form-control" disabled>
                         <option value="">Sélectionner une finition</option>
-                        @foreach (var finition in ViewBag.Finitions)
-                        {
-                            var selectedFinish = ViewBag.Filters.FinitionId == finition.Id ? "selected" : null;
-                            <option value="@finition.Id" selected="@selectedFinish">@finition.Nom</option>
-                        }
                     </select>
                 </div>
                 <div class="form-group col">
                     <label class="control-label">Année</label>
-                    <input type="number" name="Annee" class="form-control" />
+                    <input type="number" name="Annee" class="form-control" value="@(ViewBag.Filters.Annee != null ? ViewBag.Filters.Annee : "")" />
+                </div>
+                <div class="form-group col-1">
+                    <label class="control-label"></label>
+                    <input type="button" id="removeFilters" name="removeFilters" class="form-control btn btn-outline-danger" value="X" />
                 </div>
             </div>
-            <div class="row">
+            <div class="row m-3">
                 <div class="form-group col">
                     <label class="control-label">Vehicules disponibles seulement</label>
                     <input name="Disponible" class="form-check-input" type="checkbox" id="IsPublished" value="true" checked=@ViewBag.Filters.Disponible />
@@ -127,15 +120,33 @@
     }
 </section>
 <script>
+    function setMarqueId() {
+        var marqueId = '@ViewBag.MarqueId';
+        if (marqueId) {
+            var selectElement = document.getElementById("marqueSelect");
+            if (selectElement) {
+                selectElement.value = marqueId;
+            }
+        }
+        updateModeleSelect();
+    }
+
     function updateModeleSelect() {
-        updateSelect("marqueSelect", "modeleSelect", @Html.Raw(Json.Serialize(ViewBag.Modeles)), "id", "marqueId");
+        updateSelect("marqueSelect", "modeleSelect", @Html.Raw(Json.Serialize(ViewBag.Modeles)), "id", "marqueId", @(ViewBag.ModeleId != null ? ViewBag.ModeleId : ""));
         updateFinitionSelect();
     }
 
     function updateFinitionSelect() {
-        updateSelect("modeleSelect", "finitionSelect", @Html.Raw(Json.Serialize(ViewBag.Finitions)), "id", "modeleId");
+        updateSelect("modeleSelect", "finitionSelect", @Html.Raw(Json.Serialize(ViewBag.Finitions)), "id", "modeleId", @(ViewBag.FinitionId != null ? ViewBag.FinitionId : ""));
     }
     document.addEventListener("DOMContentLoaded", function () {
-        updateModeleSelect();
+        setMarqueId();
+        $('#removeFilters').click(resetForm);
     });
+
+    function resetForm() {
+        $('#marqueSelect').val("");
+        $('#modeleSelect').val("");
+        $('#finitionSelect').val("");
+    }
 </script>
