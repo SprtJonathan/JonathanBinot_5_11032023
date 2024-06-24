@@ -2,9 +2,9 @@
 # Projet 5 : Créez votre première application avec ASP .NET Core
 
 ## Authentification Admin à l'application :
-Id utilisateur : Admin
+Id utilisateur : admin@expressvoitures.com
 
-Mot de passe : Password123
+Mot de passe : P@ssword123
 
 ## Prérequis :
 MSSQL Developer 2019 ou Express 2019 doit être installé avec Microsoft SQL Server Management Studio (SSMS).
