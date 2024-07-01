@@ -26,7 +26,7 @@ namespace ExpressVoitures.Controllers
                 .Include(v => v.Marque)
                 .Include(v => v.Modele)
                 .Include(v => v.Images)
-                .Where(v => v.IsPublished == true)
+                .Where(v => v.IsPublished == true && v.DateVente == null)
                 .OrderByDescending(v => v.DateAchat)
                 .Take(3)
                 .ToListAsync();
