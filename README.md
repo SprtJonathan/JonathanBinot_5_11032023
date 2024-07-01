@@ -2,9 +2,9 @@
 # Projet 5 : Créez votre première application avec ASP .NET Core
 
 ## Authentification Admin à l'application :
-Id utilisateur : Admin
+Id utilisateur : admin@expressvoitures.com
 
-Mot de passe : Password123
+Mot de passe : P@ssword123
 
 ## Prérequis :
 MSSQL Developer 2019 ou Express 2019 doit être installé avec Microsoft SQL Server Management Studio (SSMS).
@@ -38,3 +38,15 @@ Si vous avez installé MSSQL Express, la valeur à utiliser pour Server est trè
     "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=ExpressVoitures;Trusted_Connection=True;MultipleActiveResultSets=true; TrustServerCertificate=True",
   
 Si vous avez des difficultés à vous connecter, essayez d’abord de vous connecter à l’aide de Microsoft SQL Server Management Studio (assurez-vous que le type d’authentification est « Authentification Windows »), ou consultez le site https://sqlserver-help.com/2011/06/19/help-whats-my-sql-server-name/.
+
+## Compte utilisateur :
+Du fait du besoin du concessionnaire à être le seul à pouvoir se connecter au site web, la fonction d'inscription est désactivée. Cependant il faut un compte pour avoir accès aux fonctionnalités d'administration du site. La version hébergée sur Azure dispose d'un compte administrateur actif cependant pour la version locale, il faudra ajouter manuellement un compte administrateur avec SSMS par exemple : 
+| Id | UserName | NormalizedUserName | Email | NormalizedEmail | EmailConfirmed | PasswordHash | SecurityStamp | ConcurrencyStamp | PhoneNumber | PhoneNumberConfirmed | TwoFactorEnabled | LockoutEnd | LockoutEnabled | AccessFailedCount |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| 7c34f156-dd08-4a0a-be5f-abf83d7f3970 | admin@expressvoitures.com | ADMIN@EXPRESSVOITURES.COM | admin@expressvoitures.com | ADMIN@EXPRESSVOITURES.COM | 1 | AQAAAAIAAYagAAAAEO7JuglrhvZ7yyd1RJJcGlXPi3+4F+vK7PO925V9cdKFA1lJ6QLVuAINOJRZD6rHng== | FDYPPWPCAP45MAMTBOQLDZNULID3N33M | 961785ff-4241-4cef-bbfa-ac6066b3e733 | NULL | 0 | 0 | NULL | 1 | 0 |
+
+# Le site est également hébergé sur Azure : 
+https://expressvoitures-jonathanbinot.azurewebsites.net/
+Le compte administrateur est accéssible avec les identifiants suivants : 
+login : admin@expressvoitures.com
+mot de passe : P@ssword123
